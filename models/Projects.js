@@ -9,9 +9,17 @@ module.exports = {
     })
   },
   list:function(cb){
-    db.query(`select members.id, projects.name, users.firstname, users.lastname from members inner join projects on members.projectid = projects.projectid inner join users on members.userid = users.userid;`,(err,res)=>{
+    db.query(`select * from projects`,(err,res)=>{
       if(err)console.log(err);
-      cb(res.rows)
+      db.query(`SELECT members.projectid, users.firstname || ' ' || users.lastname as name FROM members, users WHERE members.userid = users.userid order by members.projectid`,(err,data)=>{
+        if(err)console.log(err);
+          for(let i=0;i<res.rows.length;i++){
+              res.rows[i].members = data.rows.filter(function(x){
+                return x.projectid == res.rows[i].projectid
+              })
+          }
+          cb(res.rows)
+        })
     })
   },
   add:function(name){

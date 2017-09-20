@@ -47,7 +47,7 @@ module.exports = {
 
   },
   getAllUser:function(cb){
-    db.query(`SELECT firstname,lastname FROM users;`,(err,res)=>{
+    db.query(`SELECT userid,firstname,lastname,position,isfulltime FROM users;`,(err,res)=>{
       if(err)console.log(err);
       cb(res.rows)
     })

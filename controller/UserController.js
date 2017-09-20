@@ -58,109 +58,22 @@ module.exports = {
 
   },
   project:function(req,res){
-    
-    let queryLength = Object.keys(req.query).length;
-    if(queryLength >= 0 && queryLength <= 1){
+    user.getUser(req.session.user.userid,function(data){
       user.getAllUser(function(users){
-        project.list(function(data){
+        project.list(function(list){
+          console.log(JSON.stringify(list));
           res.render("projects",{
             title:"Project Management System",
             page:'project',
-            data:data,
+            data:req.session.user,
+            projectcolumns:JSON.parse(data.projectcolumns),
+            query:req.query,
             users:users,
-            csID:req.query.csID,
-            csName:req.query.csName,
-            csMembers:req.query.csMembers,
-            cfID:"",
-            cfName:"",
-            cfMember:"",
-            length:queryLength,
-            id:0,
-            name:"",
-            member:""
+            list:list
           })
         })
       })
-
-    }else if(queryLength > 1){
-
-      let id = req.query.id
-      let name = req.query.name
-      console.log(name);
-      let member = req.query.member
-
-      let checkbox_id = req.query.cfID
-      let checkbox_name = req.query.cfName
-      let checkbox_member = req.query.cfMember
-
-      if(req.query.button){
-        user.getAllUser(function(users){
-          project.list(function(data){
-
-            res.render("projects",{
-              title:"Project Management System",
-              data:data,
-              users:users,
-              csID:req.query.csID,
-              csName:req.query.csName,
-              csMembers:req.query.csMembers,
-              cfID:"",
-              cfName:"",
-              cfMember:"",
-              length:queryLength,
-              id:0,
-              name:"",
-              member:""
-            })
-          })
-        })
-
-      }else if(checkbox_id || checkbox_name || checkbox_member){
-        console.log('filter ',member);
-        user.getAllUser(function(users){
-          project.filter(checkbox_id,checkbox_name,checkbox_member,id,name,member,function(data){
-            res.render("projects",{
-              title:"Project Management System",
-              data:data,
-              users:users,
-              csID:req.query.csID,
-              csName:req.query.csName,
-              csMembers:req.query.csMembers,
-              cfID:checkbox_id,
-              cfName:checkbox_name,
-              cfMember:checkbox_member,
-              length:queryLength,
-              id:Number(id),
-              name:name,
-              member:member
-            })
-          })
-        })
-
-      }else{
-        user.getAllUser(function(users){
-          project.filter(checkbox_id,checkbox_name,checkbox_member,id,name,member,function(data){
-            res.render("projects",{
-              title:"Project Management System",
-              data:data,
-              users:users,
-              count:0,
-              length:1,
-              id:0,
-              name:"",
-              member:"",
-              csID:"",
-              csName:"",
-              csMembers:"",
-              length:queryLength,
-              cfID:"",
-              cfName:"",
-              cfMember:""
-            })
-          })
-        })
-      }
-    }
+    })
   },
   profile:function(req,res){
     res.render("profile",{
@@ -191,7 +104,7 @@ module.exports = {
   },
   updateProjectColumns:function(req,res){
     user.updateProjectColumns(req.body,req.session.user.userid,function(){
-
+      res.redirect('/project')
     })
   }
 
