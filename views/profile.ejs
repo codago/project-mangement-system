@@ -1,0 +1,58 @@
+<% include partials/header %>
+<% include partials/menu %>
+
+<div class="ui segment">
+  <h1>Profile</h1>
+  <form class="ui form" method="post" action="/profile">
+    <div class="inline field">
+      <label style="margin-left:100px;">Email</label><input type="email" name="email" placeholder="Email" readonly="true" value = "<%=data.email%>"style="margin-left:100px;width:800px;">
+    </div>
+    <div class="inline field">
+      <label style="margin-left:100px;">Password</label><input type="password" name="password" placeholder="password" style="margin-left:75px;width:800px;">
+    </div>
+
+
+    <div style="margin-left:100px;"class="grouped fields">
+      <div class="ui form">
+        <div class="inline fields">
+          <label>Position</label>
+        </div>
+
+        <div style="margin-left:142px;margin-top:-30px;"class="grouped fields">
+
+          <div class="field">
+            <div class="ui radio checkbox">
+              <input type="radio" name="position" tabindex="0" class="hidden" value="Manager" <%= (data.position === "Manager") ?"checked":''%> >
+              <label>Manager</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="ui radio checkbox">
+              <input type="radio" name="position" tabindex="0" class="hidden" value="Software Developer" <%= (data.position === "Software Developer")?"checked":''%>>
+              <label>Software Developer</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="ui radio checkbox">
+              <input type="radio" name="position" tabindex="0" class="hidden" value="Quality Assurance" <%= (data.position === "Quality Assurance")?"checked":''%>>
+              <label>Quality Assurance</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="inline field">
+      <label style="margin-left:100px;">Type</label>
+      <input style="margin-left:100px;"type="checkbox" name="cfulltime" tabindex="0" class="hidden" <%= data.isfulltime ?"checked":''%>>
+      <label>Fulltime</label>
+    </div>
+
+    <button class="ui button" type="submit" style="margin-left:100px;">Update</button>
+    <%if(message.length > 0) {%><label class="ui teal tag label"><%=message%></label><%}%>
+
+  </form>
+</div>
+<% include partials/footer %>

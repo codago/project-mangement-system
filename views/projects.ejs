@@ -1,0 +1,116 @@
+<% include partials/header %>
+<% include partials/menu %>
+  <div class="ui segment">
+    <h1>Projects</h1>
+    <h3>Filters</h3>
+    <form class="ui form" method="get" action="/project">
+      <div class="inline field">
+        <input class="ui checkbox"type="checkbox" name="cfID" tabindex="0" style="margin-left:100px;" <%= cfID?"checked":''%>>
+        <label>ID</label>
+        <input type="text" name="id" placeholder="ID" style="margin-left:100px;width:800px;" value="<%=id===0 ?"":id %>">
+      </div>
+      <div class="inline field">
+        <input class="ui checkbox" type="checkbox" name="cfName"tabindex="0" style="margin-left:100px;" <%= cfName?"checked":''%>>
+        <label>Name</label>
+        <input type="text" name="name" placeholder="Name" style="margin-left:80px;width:800px;"value="<%=name%>">
+      </div>
+      <div class="inline field">
+          <input class="ui checkbox" type="checkbox" name="cfMember"tabindex="0" style="margin-left:100px;" <%= cfMember?"checked":''%>>
+      <label>Member</label>
+      <div class="ui selection dropdown" style="margin-left:65px; width:800px">
+          <input type="hidden" name="member" value="<%=member%>">
+          <i class="dropdown icon"></i>
+          <div class="default text">Choose the member ....</div>
+          <div class="menu">
+              <%for(let i=0;i<users.length;i++){%>
+              <div class="item" data-value="<%=users[i].userid%>"><%= users[i].firstname+" "+users[i].lastname %></div>
+            <%}%>
+          </div>
+      </div>
+  </div>
+
+    <button class="ui button" type="submit" style="margin-left:130px;">Search</button>
+      <a href="/project"class="ui button"style="margin-left:10px;">Reset</a>
+    </form>
+
+    <h1>Options</h1>
+    <form class="ui form" action="/project"method="post">
+      <div class="inline field">
+        <p>Columns</p>
+        <input class="ui checkbox" name="csID" type="checkbox" value="true" tabindex="0" style="margin-left:164px;" <%= csID ? "checked":''%>
+        <label>ID</label>
+      </div>
+      <div class="inline field">
+        <p></p>
+        <input class="ui checkbox" name="csName" type="checkbox" value="true" tabindex="0" style="margin-left:215px;" <%= csName ? "checked":'' %>>
+        <label>Name</label>
+      </div>
+      <div class="inline field">
+        <p></p>
+        <input class="ui checkbox" name="csMembers" type="checkbox" value="true" tabindex="0" style="margin-left:215px;" <%= csMembers ? " checked" : '' %>>
+        <label>Members</label>
+      </div>
+        <button class="ui button" type="submit">Apply</button>
+    </form>
+
+    <table class="ui striped table">
+      <thead>
+        <tr>
+          <% if(length === 0 && data.length  > 0){%>
+            <th>#</th>
+            <th>Name</th>
+          <%}else if(data.length > 0){%>
+            <% if(csID && data.length > 0 || cfID && data.length > 0){%>
+              <th>#</th>
+            <%}%>
+            <% if(csName && data.length > 0 || cfName && data.length > 0){%>
+              <th>Name</th>
+            <%}%>
+          <%}%>
+          <% if(csMembers && data.length > 0 || cfMember && data.length > 0){%>
+          <th>Members</th>
+          <%}%>
+          <% if(csID && data.length > 0 || csName && data.length > 0|| csMembers && data.length > 0
+          || cfID && data.length > 0|| cfName && data.length > 0 || cfMember && data.length > 0 || length === 0 && data.length > 0){%>
+            <th style="display:block">Action</th>
+          <%}%>
+
+        </tr>
+      </thead>
+      <tbody>
+        <% if(data.length > 0){%>
+          <% for(var i=0;i<data.length;i++) {%>
+            <% if(length === 0 && data.length > 0){%>
+              <td><%=data[i].id%></td>
+              <td><%=data[i].name%></td>
+            <%}else if(data.length > 0){%>
+              <%if(csID && data.length >0 || cfID && data.length > 0){%>
+                <td><%=data[i].id%></td>
+              <%}%>
+              <%if(csName && data.length > 0|| cfName && data.length > 0){%>
+                <td><%=data[i].name%></td>
+              <%}%>
+            <%}%>
+
+            <% if(csMembers && data.length > 0|| cfMember && data.length > 0){%>
+            <td><%=data[i].firstname+" "+data[i].lastname%></td>
+            <%}%>
+          <%}%>
+        <%}else {%>
+          <div class="ui negative message">
+              <div class="header">
+                We're sorry we can't found the data
+              </div>
+          </div>
+        <%}%>
+
+          <% if(csID && data.length > 0|| csName && data.length > 0|| csMembers && data.length > 0||cfID && data.length > 0
+          || cfName && data.length > 0|| cfMember && data.length > 0|| length === 0 && data.length > 0){%>
+            <td><a href="#" class="positive ui button">Edit</a> <a href="#" class="negative ui button">Delete</a></td>
+          <%}%>
+      </tbody>
+    </table>
+
+    <button class="ui button" type="submit">Add</button>
+  </div>
+<% include partials/footer %>
