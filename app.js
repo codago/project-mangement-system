@@ -7,11 +7,22 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const flash = require('connect-flash');
 const session = require('express-session')
+const { Pool } = require("pg");
+
+const pool = new Pool(
+{
+    user: 'bim',
+    host: 'localhost',
+    database: 'projectmanagementdb',
+    password: '12345',
+    port: 5432,
+});
 
 
-var index = require("./routes/index");
-var users = require("./routes/users");
-var projects = require("./routes/projects");
+
+var index = require("./routes/index")(pool);
+var users = require("./routes/users")(pool);
+var projects = require("./routes/projects")(pool);
 
 var app = express();
 
@@ -25,14 +36,20 @@ app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 app.use(session({
   secret: 'bimo',
   resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true }
+  saveUninitialized: false
 }))
 app.use(flash());
+app.use(express.static(path.join(__dirname, "public")));
+
+app.use(function(req, res, next) {
+  res.header("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+  res.header("Pragma", "no-cache"); // HTTP 1.0.
+  res.header("Expires", "-1"); // Proxies.
+  next();
+});
 
 
 app.use("/", index);
