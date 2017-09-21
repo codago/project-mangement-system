@@ -1,0 +1,99 @@
+<% include partials/header %>
+<% include partials/menu %>
+<div class="container">
+  <h1>Projects</h1>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Filter</h3>
+    </div>
+    <div class="panel-body">
+      <form method="GET">
+        <input type="hidden" name="page" value="">
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">
+            <input class="form-check-input" type="checkbox" name="checkboxid" value="True">
+            ID
+          </label>
+          <div class="col-sm-10">
+            <input class="form-control" type="number" name="id" value=""  placeholder="id">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">
+            <input class="form-check-input"  type="checkbox" name="checkboxname" value="True">
+            Name
+          </label>
+          <div class="col-sm-10">
+            <input class="form-control" type="text" name="datastring"  value="" placeholder="name">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">
+            <input class="form-check-input"  type="checkbox" name="checkboxmember" value="True">
+            Member</label>
+            <div class="col-sm-10">
+              <input class="form-control" type="number" name="datainteger" value="" placeholder="integer">
+
+
+
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-10">
+              <button type="submit" name="submit" class="btn btn-primary">Search</button>
+              <button type="reset" name="submit" class="btn btn-primary">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Options</h3>
+      </div>
+      <div class="panel-body">
+        <form class="" action="index.html" method="post">
+          <div class="form-group row">
+            <label class="col-sm-2 control-label">columns</label>
+            <div class="col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" value="">
+                  ID
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" value="">
+                  Name
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" value="">
+                  Members
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <table class="table table-striped ">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Members</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <% include partials/footer %>
