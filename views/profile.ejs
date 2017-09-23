@@ -1,0 +1,63 @@
+<% include partials/header %>
+
+<div class="container">
+  <div class="row">
+    <div class="col 4">
+<!--################### The begini of The content body ####################-->
+
+<div class="card card-container">
+  Profile
+    <form class="form-signin" method="get" action="/">
+        <!-- <span id="reauth-email" class="reauth-email"></span> -->
+        <table id="mytable" class="table table-bordred table-striped">
+          <tr>
+            <td style="text-align: left; width:10%;">Email</td>
+            <td colspan="2" style="width:100%"><input class="form-control" type="text" name="email" placeholder="Email"></td>
+          </tr>
+
+          <tr>
+            <td style="text-align: left;" > Password </td>
+            <td colspan="2" style=""><input class="form-control" type="password" name="password" placeholder="Password"></td>
+          </tr>
+
+          <tr>
+            <td rowspan="3" style="text-align: left;" > Potition</td>
+            <td style="text-align: left"> <input type="checkbox" name="check_name" value="true"></td> </td>
+            <td style="text-align: left; width:100%"> Manager </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; " > <input type="checkbox" name="check_name" value="true"></td> </td>
+            <td colspan="2" style="text-align: left"> Software Developer </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; " ><input type="checkbox" name="check_name" value="true"></td>  </td>
+            <td colspan="2" style="text-align: left"> Quality Assurance </td>
+          </tr>
+
+          <tr>
+            <td style="text-align: left;" > Type </td>
+            <td style="text-align: left"><input class="form-control" type="checkbox" name="check_name" value="true"></td>
+            <td>
+              <select class="form-control" style="width:100%" name="type">
+                <option value="Full Time">Full Time</option>
+                <option value="Part Time">Part Time</option>
+              </select>
+            </td>
+          </tr>
+
+          <tr>
+            <td><button style="width:100%;" class="btn btn-success pull-left" type="submit" name="cari">Apply</button></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+    </form><!-- /form -->
+</div><!-- /card-container -->
+
+
+<!--################### The end of Content Body ####################-->
+    </div>
+  </div>
+</div>
+
+<% include partials/footer %>

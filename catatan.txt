@@ -1,0 +1,9 @@
+1. sudo npm install express-generator -g ==> install express-generator secara global
+2. express folder_project ==> create express template
+3. cd folder_project ==> go to the directory project
+4. npm install ==> install dependencies
+5. npm install nodemon ==> install nodemon
+6. npm install ejs ==> install ejs view engine
+7. nodemon app.js ==> running the server
+8. Open browser and go to localhost:3000
+9. it should be running
