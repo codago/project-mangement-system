@@ -7,3 +7,12 @@
 7. nodemon app.js ==> running the server
 8. Open browser and go to localhost:3000
 9. it should be running
+
+
+10. install express-session
+11. set nodemon in package.json =>
+    "scripts": {
+      "start": "node ./bin/www",
+      "dev": "nodemon ./bin/www" //add this
+    }
+12 "npm run "dev to run the server
