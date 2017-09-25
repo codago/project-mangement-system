@@ -11,7 +11,8 @@ module.exports = function(db) {
     console.log(req.session);
     let filterQuery = [];
     let isFilter = false;
-    let sqlQuery = 'SELECT * FROM projects'
+    let sqlQuery = 'SELECT count(*) AS total FROM projects'
+
 
     if(req.query.cid && req.query.id) {
       filterQuery.push(`projectid = ${req.query.id}`)
@@ -29,31 +30,62 @@ module.exports = function(db) {
       sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
     }
 
-      sqlQuery += ' ORDER BY projectid ASC'
-    db.query(sqlQuery, function(err, projectsData) {
-      if(err) {
-        console.err(err);
+    //counting record data for pagination
+    db.query(sqlQuery ,function(err, countData) {
+      //pagination
+      console.log("this is url: ", req.url);
+      let url = (req.url == "/") ? "/?page=1" : req.url;
+      console.log("this is url variable: ", url);
+      let page = Number(req.query.page) || 1
+      let limit = 5
+      let offset = (page-1) * 5
+      let total = countData.rows[0].total;
+      let pages = (total == 0) ? 1 : Math.ceil(total/limit);
+      let pagination = {page: page, limit: limit, offset: offset, pages: pages, total: total, url: url}
+
+      let sqlQuery = 'SELECT * FROM projects'
+      if(isFilter) {
+        sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
       }
-      var sqlQuery = `SELECT members.projectid,
-      users.firstname || ' ' || users.lastname AS name, users.role FROM members,
-      users WHERE members.userid=users.userid;`
-      db.query(sqlQuery, function(err, membersData) {
+      sqlQuery +=  ` ORDER BY projectid ASC LIMIT ${limit} OFFSET ${offset}`
+      console.log(sqlQuery);
+      db.query(sqlQuery, function(err, projectsData) {
         if(err) {
           console.error(err);
         }
-        for(let x=0; x<projectsData.rows.length; x++) {
-          projectsData.rows[x].members = membersData.rows.filter(function(item) {
-            return item.projectid === projectsData.rows[x].projectid;
-          });
-        }
-        db.query("SELECT * FROM users", function(err, userData) {
+        console.log("ini projects ada: ");
+        console.log(projectsData);
+        var sqlQuery = `SELECT members.projectid,
+        users.firstname || ' ' || users.lastname AS name, users.role FROM members,
+        users WHERE members.userid=users.userid
+        ORDER BY projectid ASC`
+        db.query(sqlQuery, function(err, membersData) {
           if(err) {
-            console.err(err);
+            console.error(err);
           }
-          res.render('projects/list', { title: 'Express', page: "project", listData: projectsData.rows, userData: userData.rows, projectColumns: JSON.parse(req.session.user.projectcolumns), query: req.query });
+          console.log("ini projects data: ", projectsData.rows);
+          console.log("ini members data: ", membersData.rows);
+          for(let x=0; x<projectsData.rows.length; x++) {
+            projectsData.rows[x].members = membersData.rows.filter(function(item) {
+              return item.projectid === projectsData.rows[x].projectid;
+            });
+          }
+
+          console.log("ini projects data after looping: ", projectsData);
+          db.query("SELECT * FROM users", function(err, userData) {
+            if(err) {
+              console.err(err);
+            }
+            res.render('projects/list', { title: 'Express', page: "project", listData: projectsData.rows, userData: userData.rows, projectColumns: JSON.parse(req.session.user.projectcolumns), query: req.query, pagination: pagination });
+          });
         });
       });
+
+
     });
+
+
+
   });
 
   router.post('/projectcolumn', userChecker, function(req, res) {

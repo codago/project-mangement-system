@@ -8,7 +8,7 @@
     </div>
     <div class="panel-body">
       <form method="GET">
-        <input type="hidden" name="page" value="">
+        <input type="hidden" name="page" value="<%= pagination.page %>">
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">
             <input class="form-check-input" type="checkbox" name="cid" value="True" <%= query.cid ? " checked" : ""%>>
@@ -104,7 +104,7 @@
               <tr>
                 <% if(projectColumns.coid) { %><td><%= listData[i].projectid %></td><% } %>
                 <% if(projectColumns.coname) { %><td><%= listData[i].name %></td><% } %>
-                <% if(projectColumns.comembers) { %><td class="col-md-6"><%= listData[i].members.map(function(item) {return `${item.name} (${item.role})` }).join(', ') %></td><% } %>
+                <% if(projectColumns.comembers) { %> <% console.log(listData[i]) %> <td class="col-md-6"><%= listData[i].members.map(function(item) {return `${item.name} (${item.role})` }).join(', ') %></td><% } %>
                 <td>
                   <a href='/projects/edit/<%= listData[i].projectid %>'>
                     <button class="btn btn-success" type="button" name="button">
@@ -123,6 +123,19 @@
             <% } %>
           </tbody>
         </table>
+
+        <ul class="pagination">
+          <% console.log("this is url on list.ejs: ", pagination.url) %>
+          <% if(pagination.page > 1){ %><li><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${pagination.page - 1}`) %>">Previous</a></li> <% } %>
+          <% for(let i = 1; i <= pagination.pages; i++){ %>
+          <li class="<%= (pagination.page == i) ? 'active' : ''%>"><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${i}`) %>"><%= i %></a></li>
+          <% } %>
+          <% if(pagination.pages > pagination.page){ %><li><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${pagination.page + 1}`) %>">Next</a></li> <% } %>
+        </ul>
+        <p><%= `Showing ${pagination.offset + 1} to ${(pagination.offset + pagination.limit > pagination.total) ? pagination.total : pagination.offset + pagination.limit} of ${pagination.total} ${(pagination.total > 1) ? 'entries' : 'entry'}` %></p>
+        <br>
+
+
         <a href="/projects/add" class="btn btn-primary">Add</a>
       </div>
 
