@@ -39,7 +39,6 @@ module.exports = function(db) {
   });
 
   router.post('/register', function(req, res, next) {
-    console.log(req.body.pass, req.body.repass);
     if(req.body.pass !== req.body.repass) {
       req.flash('registerMessage', 'password is not match');
       return res.redirect('/register')

@@ -18,8 +18,6 @@ const pool = new Pool(
     port: 5432,
 });
 
-
-
 var index = require("./routes/index")(pool);
 var users = require("./routes/users")(pool);
 var projects = require("./routes/projects")(pool);
