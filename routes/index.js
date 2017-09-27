@@ -51,6 +51,7 @@ module.exports = function(db) {
         req.flash('registerMessage', 'something wrong please call administrator');
         return res.redirect('/register')
       }
+      console.log(data);
       if(data.rows.length > 0) {
         req.flash('registerMessage', 'email already registered');
         return res.redirect('/register')

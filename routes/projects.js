@@ -132,11 +132,11 @@ module.exports = function(db) {
   });
 
   router.get('/delete/:id', userChecker, function(req, res) {
-    db.query(`DELETE FROM projects WHERE projectid = ${req.params.id}`, function(err) {
+    db.query(`DELETE FROM members WHERE projectid = ${req.params.id}`, function(err) {
       if(err) {
         console.error(err);
       }
-      db.query(`DELETE FROM members WHERE projectid = ${req.params.id}`, function(err) {
+      db.query(`DELETE FROM projects WHERE projectid = ${req.params.id}`, function(err) {
         if(err) {
           console.error(err);
         }
@@ -181,6 +181,98 @@ module.exports = function(db) {
       })
     })
   });
+
+  router.get('/details/:id/overview', userChecker, function(req, res) {
+    let sqlQuery = `SELECT members.id, users.firstname || ' ' || users.lastname AS membername,
+    projects.name AS projectname FROM members JOIN users ON members.userid=users.userid
+    JOIN projects ON members.projectid=projects.projectid
+    WHERE members.projectid = ${req.params.id};`
+    db.query(sqlQuery, function(err, projectData) {
+      res.render('projects/details', {title: "Project Details", page: "project", projectData: projectData.rows, idURL: req.params.id});
+    });
+  });
+
+  router.get('/details/:id/members', userChecker, function(req, res) {
+    let filterQuery = [];
+    let isFilter = false;
+    let sqlQuery = `SELECT members.id, users.userid, users.firstname || ' ' || users.lastname AS name, users.role FROM members
+    JOIN users ON members.userid=users.userid
+    JOIN projects ON members.projectid=projects.projectid
+    WHERE projects.projectid = ${req.params.id}`
+
+
+    console.log("======================================");
+    console.log("ini req.query.id: ", req.query.id);
+    console.log("ini req.query.name: ", req.query.name);
+    console.log("ini req.query.position: ", req.query.position);
+    console.log("ini cid: ", req.query.cid);
+    console.log("ini cname ", req.query.cname);
+    console.log("ini cposition ", req.query.cposition);
+    console.log("======================================");
+
+    if(req.query.cid && req.query.id) {
+      filterQuery.push(`users.userid = ${req.query.id}`)
+      isFilter = true;
+    }
+
+    if(req.query.cname && req.query.name) {
+      let queryName = req.query.name.split(' ').filter(function(deleteSpace){return deleteSpace !== ''})
+      let tempQueryArray = [];
+      let tempQuery = '';
+      for(var x = 0; x<queryName.length; x++) {
+        tempQueryArray.push(`users.firstname LIKE '%${queryName[x]}%'`)
+        tempQueryArray.push(`users.lastname LIKE '%${queryName[x]}%'`)
+      }
+      tempQuery = `(${tempQueryArray.join(' OR ')})`
+      filterQuery.push(tempQuery)
+      isFilter = true;
+    }
+
+    if(req.query.cposition && req.query.position) {
+      filterQuery.push(`users.role = '${req.query.position}'`)
+      isFilter = true;
+    }
+
+    if(isFilter) {
+      sqlQuery += ` AND ${filterQuery.join(" AND ")}`
+    }
+
+    console.log("======================================");
+    console.log("ini sqlQuery", sqlQuery);
+    console.log("======================================");
+    //ORDER BY users.userid
+    db.query(sqlQuery, function(err, memberListData) {
+      console.log(memberListData.rows);
+        res.render('projects/members', {
+          title: "Project Members",
+          page: "project",
+          idURL: req.params.id,
+          query: req.query,
+          memberListData: memberListData.rows,
+          memberColumns: JSON.parse(req.session.user.membercolumns)
+        });
+    });
+  });
+
+  router.get('/details/:id/members/delete/:iddelete', userChecker, function(req, res) {
+    db.query(`DELETE FROM members WHERE id = ${req.params.iddelete}`, function(err) {
+      res.redirect(`/projects/details/${req.params.id}/members`);
+    })
+  });
+
+  router.post('/details/:id/members/membercolumn', userChecker, function(req, res) {
+    let memberColumns = JSON.stringify(req.body)
+    req.session.user.membercolumns = memberColumns;
+    let sqlQuery = `UPDATE users SET membercolumns = '${memberColumns}' WHERE userid = ${req.session.user.userid}`;
+    db.query(sqlQuery, function(err) {
+      console.log(sqlQuery);
+      if(err) {
+        console.error(err);
+      }
+      res.redirect(`/projects/details/${req.params.id}/members`);
+    });
+  });
+
   return router;
 
 }

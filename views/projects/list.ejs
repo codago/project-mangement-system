@@ -102,7 +102,9 @@
           <%if (listData.length > 0) { %>
             <% for(let i = 0; i<listData.length; i++) { %>
               <tr>
-                <% if(projectColumns.coid) { %><td><%= listData[i].projectid %></td><% } %>
+                <% if(projectColumns.coid) { %>
+                  <td><a href="/projects/details/<%= listData[i].projectid %>/overview"><%= listData[i].projectid %></a></td>
+                  <% } %>
                 <% if(projectColumns.coname) { %><td><%= listData[i].name %></td><% } %>
                 <% if(projectColumns.comembers) { %> <% console.log(listData[i]) %> <td class="col-md-6"><%= listData[i].members.map(function(item) {return `${item.name} (${item.role})` }).join(', ') %></td><% } %>
                 <td>
