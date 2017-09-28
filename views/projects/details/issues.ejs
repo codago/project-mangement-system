@@ -1,0 +1,208 @@
+<% include ../../partials/header %>
+<% include ../../partials/menu %>
+
+<div class="container" style="float: left; width: 20%">
+  <ul class="nav nav-sidebar">
+    <li><a href="/projects/details/<%= idURL %>/overview">Overview <span class="sr-only">(current)</span></a></li>
+    <li><a href="/projects/details/<%= idURL %>/activity">Activity</a></li>
+    <li>&nbsp</li>
+  </ul>
+  <ul class="nav nav-sidebar">
+    <li><a href="/projects/details/<%= idURL %>/members">Members</a></li>
+    <li class="activesidebar"><a href="#">Issues</a></li>
+  </ul>
+</div>
+
+<div class="container" style="float: right; width: 80%">
+  <div class="page-header">
+    <h1>New Issue</h1>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+
+
+        <form method="GET">
+          <input type="hidden" name="page" value="">
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">
+              Tracker
+            </label>
+            <div class="col-sm-10">
+              <div class="radio">
+                <label>
+                  <input type="radio" name="trackerbug" value="option1">
+                  Bug
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="trackerfeature"  value="option1">
+                  Feature
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="trackersupport" value="option1">
+                  Support
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Subject</label>
+            <div class="col-sm-10">
+              <input class="form-control" type="text" name="name"  value="" placeholder="name">
+            </div>
+          </div>
+
+
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Description</label>
+              <div class="col-sm-10">
+                <textarea class="form-control" rows="5"></textarea>
+              </div>
+            </div>
+
+
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">
+                Status
+              </label>
+              <div class="col-sm-10">
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="statusnew" value="option1" >
+                    New
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="statusinprogress" value="option1" >
+                    In Progress
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="statusresolved" value="option1" >
+                    Resolved
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="statusfeedback" value="option1" >
+                    Feedback
+                  </label>
+                </div>
+
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="statusclosed" value="option1" >
+                    Closed
+                  </label>
+                </div>
+
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="statusrejected" value="option1" >
+                    Rejected
+                  </label>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">
+                Priority
+              </label>
+              <div class="col-sm-10">
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="prioritynormal" value="option1" >
+                    Normal
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="priorityhigh" value="option1" >
+                    High
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="priorityurgent" value="option1" >
+                    Urgent
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="priorityimmediate" value="option1" >
+                    Immediate
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Asignee</label>
+                <div class="col-sm-10">
+                  <select class="form-control" name="assignee">
+                    <option value="">choose a member</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Start Date</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="date" name="startdate"  value="" placeholder="start date">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Due Date</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="date" name="duedate"  value="" placeholder="due date">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Estimated Time</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="number" name="estimatedtime" value="" placeholder="estimated time">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">% done</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="number" name="donepercentage" value="" min="0" max="100" >
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">% Files</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="number" name="donepercentage" value="" >
+                </div>
+              </div>
+
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <button type="submit" name="submit" class="btn btn-primary">Save</button>
+                <a href="" class="btn btn-primary">Reset</a>
+              </div>
+            </div>
+
+
+
+
+          </form>
+
+
+
+    </div>
+  </div>
+
+  <% include ../../partials/footer %>

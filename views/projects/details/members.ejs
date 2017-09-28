@@ -1,15 +1,15 @@
-<% include ../partials/header %>
-<% include ../partials/menu %>
+<% include ../../partials/header %>
+<% include ../../partials/menu %>
 
 <div class="container" style="float: left; width: 20%">
   <ul class="nav nav-sidebar">
     <li><a href="/projects/details/<%= idURL %>/overview">Overview <span class="sr-only">(current)</span></a></li>
-    <li><a href="#">Activity</a></li>
+    <li><a href="/projects/details/<%= idURL %>/activity">Activity</a></li>
     <li>&nbsp</li>
   </ul>
   <ul class="nav nav-sidebar">
     <li class="activesidebar"><a href="">Members</a></li>
-    <li><a href="">Issues</a></li>
+    <li><a href="/projects/details/<%=idURL%>/issues/">Issues</a></li>
   </ul>
 </div>
 
@@ -56,7 +56,7 @@
           <div class="form-group row">
             <div class="col-sm-10">
               <button type="submit" name="submit" class="btn btn-primary">Search</button>
-              <a href="/projects/details/<%=idURL%>/members/membercolumn" class="btn btn-primary">Reset</a>
+              <a href="/projects/details/<%=idURL%>/members" class="btn btn-primary">Reset</a>
             </div>
           </div>
         </form>
@@ -135,8 +135,8 @@
           </tbody>
         </table>
 
-
+      <a href="/projects/details/<%=idURL%>/addmember" class="btn btn-primary">Add</a>
 
       </div>
 
-      <% include ../partials/footer %>
+      <% include ../../partials/footer %>

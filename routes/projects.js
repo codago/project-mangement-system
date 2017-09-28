@@ -188,7 +188,7 @@ module.exports = function(db) {
     JOIN projects ON members.projectid=projects.projectid
     WHERE members.projectid = ${req.params.id};`
     db.query(sqlQuery, function(err, projectData) {
-      res.render('projects/details', {title: "Project Details", page: "project", projectData: projectData.rows, idURL: req.params.id});
+      res.render('projects/details/overview', {title: "Project Details", page: "project", projectData: projectData.rows, idURL: req.params.id});
     });
   });
 
@@ -243,7 +243,7 @@ module.exports = function(db) {
     //ORDER BY users.userid
     db.query(sqlQuery, function(err, memberListData) {
       console.log(memberListData.rows);
-        res.render('projects/members', {
+        res.render('projects/details/members', {
           title: "Project Members",
           page: "project",
           idURL: req.params.id,
@@ -271,6 +271,18 @@ module.exports = function(db) {
       }
       res.redirect(`/projects/details/${req.params.id}/members`);
     });
+  });
+
+  router.get('/details/:id/addmember', userChecker, function(req, res) {
+    res.redirect(`/projects/edit/${req.params.id}`)
+  });
+
+  router.get('/details/:id/activity', userChecker, function(req, res) {
+    res.render('projects/details/activity', {title: "Project Activity", page: "project", query: req.query, idURL: req.params.id})
+  });
+
+  router.get('/details/:id/issues', userChecker, function(req, res) {
+    res.render('projects/details/issues', {title: "Project Issues", page: "project", query: req.query, idURL: req.params.id})
   });
 
   return router;

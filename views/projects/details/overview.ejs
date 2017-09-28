@@ -1,15 +1,15 @@
-<% include ../partials/header %>
-<% include ../partials/menu %>
+<% include ../../partials/header %>
+<% include ../../partials/menu %>
 
 <div class="container" style="float: left; width: 20%">
   <ul class="nav nav-sidebar">
     <li class="activesidebar"><a href="/projects/details/<%= idURL %>/overview">Overview <span class="sr-only">(current)</span></a></li>
-    <li><a href="#">Activity</a></li>
+    <li><a href="/projects/details/<%= idURL %>/activity">Activity</a></li>
     <li>&nbsp</li>
   </ul>
   <ul class="nav nav-sidebar">
     <li><a href="/projects/details/<%= idURL %>/members">Members</a></li>
-    <li><a href="">Issues</a></li>
+    <li><a href="/projects/details/<%=idURL%>/issues">Issues</a></li>
   </ul>
 </div>
 
@@ -48,4 +48,4 @@
   </div>
 </div>
 
-<% include ../partials/footer %>
+<% include ../../partials/footer %>
