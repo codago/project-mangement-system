@@ -78,6 +78,7 @@ module.exports = function(db) {
   });
 
   router.post('/add', userChecker, function(req, res) {
+<<<<<<< HEAD
      db.query(`INSERT INTO projects(name) VALUES('${req.body.name}')`, function(err) {
        if(err) {
          console.error(err);
@@ -103,6 +104,29 @@ module.exports = function(db) {
        });
      });
    });
+=======
+    db.query(`INSERT INTO projects(name) VALUES('${req.body.name}')`, function(err) {
+      if(err) {
+        console.error(err);
+      }
+      db.query("SELECT projectid FROM projects ORDER BY projectid DESC LIMIT 1", function(err, projectId) {
+        if(err) {
+          console.error(err);
+        }
+        let insertData = []
+        for(var x = 0; x<req.body.members.length; x++) {
+          insertData.push(`(${projectId.rows[0].projectid}, ${req.body.members[x]})`)
+        }
+        db.query(`INSERT INTO members(projectid, userid) VALUES ${insertData.join(',')}`, function(err) {
+          if(err) {
+            console.error(err);
+          }
+          res.redirect('/projects');
+        });
+      });
+    });
+  });
+>>>>>>> 96db1580fe7017ab2b8c60fa4632e8ecc3b00085
 
   router.get('/delete/:id', userChecker, function(req, res) {
     db.query(`DELETE FROM projects WHERE projectid = ${req.params.id}`, function(err) {
@@ -142,9 +166,15 @@ module.exports = function(db) {
           console.error(err);
         }
         let insertData = []
+<<<<<<< HEAD
           for(var x = 0; x<req.body.members.length; x++) {
           insertData.push(`(${req.params.id}, ${req.body.members[x]})`)
         };
+=======
+        for(var x = 0; x<req.body.members.length; x++) {
+          insertData.push(`(${req.params.id}, ${req.body.members[x]})`)
+        }
+>>>>>>> 96db1580fe7017ab2b8c60fa4632e8ecc3b00085
         db.query(`INSERT INTO members(projectid, userid) VALUES ${insertData.join(',')}`, function(err) {
           if(err) {
             console.error(err);

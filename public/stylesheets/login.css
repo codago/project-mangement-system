@@ -5,13 +5,12 @@
  * General styles
  */
 body, html {
-    height: 100%;
-    background-repeat: repeat;
-    background-color: #cc4c4c;
+    background-repeat: repeat-x repeat-y;
+    background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
 }
 
 .card-container.card {
-    max-width: 350px;
+    max-width: 350px;/* XXX:  */
     padding: 40px 40px;
 }
 
