@@ -1,0 +1,60 @@
+'use strict'
+const express       = require('express');
+const router        = express.Router();
+const loginChecker  = require('../helpers/loginChecker');
+// 
+// const {Client}      = require('pg')
+// const client        = new Client({
+//   user: 'zul',
+//   host: 'localhost',
+//   database: 'project_management',
+//   password: '1234',
+//   port: 5432,
+// })
+//
+// client.connect();
+
+/* GET home page. */
+router.get('/', loginChecker, function(req, res, next) {
+  //let email = req.session.email;
+//  client.query(`SELECT * FROM users WHERE email = $1`, [email], (err, data) =>{
+    //  let item = data.rows[0];
+    //  console.log(item);
+      res.render('profile', {title: 'Profile', page: 'PROFILE'})
+  //  });
+});
+
+router.post('/', loginChecker, function(req, res, next) {
+  let email       = req.session.email,
+      password    = req.body.password,
+      position    = req.body.position,
+      type        = req.body.type,
+      bagianWhere = "",
+      sql         = `UPDATE users SET position = ${position}, type = ${type}`;
+
+      if(password !== ""){
+        bagianWhere += `, password = ${password}`
+        console.log('password');
+      }
+      sql +=  bagianWhere;
+      sql +=  ` WHERE email = ${email}`;
+      console.log(sql);
+      //
+      // client.query(`sql`, (err, data) => {
+      //   if (data.rows.length == 1){
+      //     //req.session.email = data.rows[0].email;
+      //     //let email = req.session.user;
+      //     console.log('ini adalah data',email);
+      //     //res.redirect('/profile.html');
+      //     //res.render('profile', { title: 'profile', page:'PROFILE', email: email });
+      //   }
+      //   else {
+      //     console.log("tidak ditemukan");
+      //     res.redirect('/');
+      //   }
+      //   console.log('postgresql is connect');
+      // }); //penutup client query
+
+});
+
+module.exports = router;

@@ -1,16 +1,19 @@
-var express     = require('express');
-var path        = require('path');
-var favicon     = require('serve-favicon');
-var logger      = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser  = require('body-parser');
-var index       = require('./routes/index');
-var projects    = require('./routes/projects');
-var profile     = require('./routes/profile');
-var add         = require('./routes/add_projects');
-var app         = express();
+var express       = require('express');
+var path          = require('path');
+var favicon       = require('serve-favicon');
+var logger        = require('morgan');
+var cookieParser  = require('cookie-parser');
+var bodyParser    = require('body-parser');
+var cors          = require('cors')
+var index         = require('./routes/index');
+var projects      = require('./routes/projects');
+var profile       = require('./routes/profile');
+var add           = require('./routes/add_projects');
+var app           = express();
 
+app.use(cors())
 let session = require('express-session');
+
 app.use(session({
     secret: '2C44-4D44-WppQ38S',
     resave: true,
@@ -30,9 +33,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/projects.html', projects);
-app.use('/profile.html', profile);
-app.use('/add.html', add);
+app.use('/projects', projects);
+app.use('/profile', profile);
+app.use('/add', add);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

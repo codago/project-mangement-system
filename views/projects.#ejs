@@ -1,0 +1,134 @@
+<% include partials/header %>
+<% include partials/menu %>
+
+<div class="container">
+  <div class="row">
+
+<!--################### The begini of The content body ####################-->
+
+    <div class="card card-container">
+      FILTERS
+        <form class="form-signin" method="get" action="/">
+            <!-- <span id="reauth-email" class="reauth-email"></span> -->
+            <table id="mytable" class="table table-bordred table-striped">
+              <tr>
+                <td style="width:10%"><input type="checkbox" name="check_id" value="true"></td>
+                <td style="width:80%"><input type="text" class="form-control" placeholder="ID" required autofocus></td>
+              </tr>
+
+              <tr>
+                <td style="width:10%"><input type="checkbox" name="check_name" value="true"></td>
+                <td style="width:80%"> <input type="text" class="form-control" placeholder="Name" required></td>
+              </tr>
+
+              <tr>
+                <td style="width:10%"><input type="checkbox" name="check_member" value="true"></td>
+                <td style="width:90%">
+                  <select class="form-control" name="member">
+                      <option value="">Choose The Member ...</option>
+                      <option value="">1</option>
+                      <option value="">2</option>
+                  </select>
+                </td>
+              </tr>
+
+              <tr>
+                <td></td>
+                <td><button style="width:10%" class="btn btn-success pull-left" type="submit" name="cari">Search</button>
+              </tr>
+            </table>
+        </form><!-- /form -->
+    </div><!-- /card-container -->
+
+
+    <div class="card card-container">
+      Option
+        <form class="form-signin" method="get" action="/">
+            <!-- <span id="reauth-email" class="reauth-email"></span> -->
+            <table id="mytable" class="table table-bordred table-striped">
+              <tr>
+                <td style="width:10%"><input type="checkbox" name="check_name" value="true"></td>
+                <td style="text-align: left;">ID</td>
+              </tr>
+
+              <tr>
+                <td style="width:10%"><input type="checkbox" name="check_name" value="true"></td>
+                <td style="text-align: left;" > Name </td>
+              </tr>
+
+              <tr>
+                <td style="width:10%"><input type="checkbox" name="check_name" value="true"></td>
+                <td style="text-align: left;" > Members </td>
+              </tr>
+
+              <tr>
+                <td></td>
+                <td><button style="width:10%;" class="btn btn-success pull-left" type="submit" name="cari">Apply</button></td>
+              </tr>
+            </table>
+        </form><!-- /form -->
+    </div><!-- /card-container -->
+
+    <div class="card card-container">
+      <table id="mytable" class="table table-bordred table-striped">
+        <thead>
+          <tr>
+             <th style="width:10%">ID</th>
+             <th>Nama</th>
+             <th colspan="2" style="width: 10%">ACTION</th>
+           </tr>
+       </thead>
+
+       <tbody>
+        <%# if(panjang == 0){ %>
+           <td colspan="8">Data  kosong</td>
+        <%#}
+           for (let i=0; i<panjang; i++)
+             {%>
+               <tr>
+                 <td style="width:10%">  <%#= data[i]._id    %></td>
+                 <td>  <%#= data[i].nama    %></td>
+                 <td>
+                   <!-- <a class="btn btn-success" href="/edit/<%#= data[i]._id %>">Edit</a> -->
+                 </td>
+                 <td>
+                   <!-- <a  class="btn btn-danger" href="/delete/<%#= data[i]._id %>" class='delete'
+                   onclick="return confirm('Yakin menghapusn data?')">Delete</a> -->
+                 </td>
+               </tr>
+       <%# } %>
+       </tbody>
+       <tr>
+         <td></td>
+         <td><button style="width:12%;" class="btn btn-success pull-left" type="submit" name="cari">Add</button></td>
+       </tr>
+     </table>
+    </div><!-- /card-container -->
+
+    <!-- pagination -->
+    <div class="container">
+    	<div class="row">
+    			<ul class="pagination pull-right" style="padding-bottom:30px;">
+    					<!-- Tombol Prev-->
+    					<%# if(halaman>1){ %>
+    						<li><a href="<%##= url.replace(`/?page=${halaman}`,`/?page=${halaman-1}`) %>">Prev</a></li>
+    					<%#}%>
+
+    					<%#for(let i=1; i<=jumlahHalaman; i++){  %>
+    							<li<%#= (halaman==i) ? " class=active" : "" %> ><a href="<%#= url.replace(`/?page=${halaman}`,`/?page=${i}`) %>"><%#=i%></a></li>
+    					<%# }%>
+    					<!-- Tombol Next-->
+    					<%# if(halaman<jumlahHalaman){ %>
+    							<li><a href="<%#= url.replace(`/?page=${halaman}`,`/?page=${halaman+1}`) %>">Next</a></li>
+    						<%#}%>
+    			</ul>
+    		</div>
+    </div>
+
+<!--################### The end of Content Body ####################-->
+  </div>
+</div>
+
+
+
+<% include partials/footer %>

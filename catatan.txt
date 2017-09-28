@@ -16,3 +16,8 @@
       "dev": "nodemon ./bin/www" //add this
     }
 12 "npm run "dev to run the server
+
+
+Passport JS & Oauth
+
+passportjs.org
