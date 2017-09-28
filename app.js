@@ -8,6 +8,8 @@ const bodyParser = require("body-parser");
 const flash = require('connect-flash');
 const session = require('express-session')
 const { Pool } = require("pg");
+const fileUpload = require('express-fileupload');
+
 
 const pool = new Pool(
 {
@@ -21,6 +23,7 @@ const pool = new Pool(
 var index = require("./routes/index")(pool);
 var users = require("./routes/users")(pool);
 var projects = require("./routes/projects")(pool);
+
 
 var app = express();
 
@@ -41,14 +44,13 @@ app.use(session({
 }))
 app.use(flash());
 app.use(express.static(path.join(__dirname, "public")));
-
 app.use(function(req, res, next) {
   res.header("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
   res.header("Pragma", "no-cache"); // HTTP 1.0.
   res.header("Expires", "-1"); // Proxies.
   next();
 });
-
+app.use(fileUpload());
 
 app.use("/", index);
 app.use("/users", users);

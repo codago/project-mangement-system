@@ -13,6 +13,7 @@
     "debug": "~2.6.3",
     "ejs": "~2.5.6",
     "express": "~4.15.2",
+    "express-fileupload": "^0.2.0",
     "express-session": "^1.15.5",
     "morgan": "~1.8.1",
     "password-hash": "^1.2.2",

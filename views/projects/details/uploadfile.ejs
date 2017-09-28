@@ -8,44 +8,35 @@
     <li>&nbsp</li>
   </ul>
   <ul class="nav nav-sidebar">
-    <li><a href="/projects/details/<%= idURL %>/members">Members</a></li>
+    <li><a href="/projects/details/<%=idURL%>/members">Members</a></li>
     <li><a href="/projects/details/<%=idURL%>/issues">Issues</a></li>
   </ul>
 </div>
 
 <div class="container" style="float: right; width: 80%">
   <div class="page-header">
-    <h1>Overview</h1>
-  </div>
-  <h2><%= projectData[0].projectname %> </h2>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title"><b>Issue Tracking</b></h3>
-    </div>
-    <div class="panel-body">
-      <div class="container">
-        <ul>
-          <li>Bug: 0 Open /0</li>
-          <li>Feature: 2 Open /6</li>
-          <li>Support: 1 Open /1</li>
-        </ul>
-      </div>
-    </div>
+    <h1>Upload</h1>
   </div>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title"><b>Members</b></h3>
+      <h3 class="panel-title"><b>Upload an image file</b></h3>
     </div>
     <div class="panel-body">
       <div class="container">
-        <ul>
-          <% for(var x = 0; x < projectData.length; x++) { %>
-            <li><%= projectData[x].membername %></li>
-          <% } %>
-        </ul>
-      </div>
+        <form ref='uploadForm'
+        id='uploadForm'
+        action='/projects/details/<%=idURL%>/issues/upload/<%=issueidURL%>'
+        method='post'
+        encType="multipart/form-data">
+        <span class="btn btn-default btn-file">
+          Browse <input type="file" accept="image/*" name="uploadedfile">
+        </span>
+        <input type='submit' class="btn btn-primary" value='Upload!' />
+      </form>
     </div>
   </div>
+</div>
+
 </div>
 
 <% include ../../partials/footer %>

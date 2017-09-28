@@ -1,7 +1,8 @@
 "use strict";
-var express = require('express');
-var router = express.Router();
-var userChecker = require('../helper/userchecker')
+const express = require('express');
+const router = express.Router();
+const userChecker = require('../helper/userchecker')
+const crypto = require("crypto");
 
 module.exports = function(db) {
   /* GET home page. */
@@ -277,12 +278,239 @@ module.exports = function(db) {
     res.redirect(`/projects/edit/${req.params.id}`)
   });
 
-  router.get('/details/:id/activity', userChecker, function(req, res) {
-    res.render('projects/details/activity', {title: "Project Activity", page: "project", query: req.query, idURL: req.params.id})
+  router.get('/details/:id/issues', userChecker, function(req, res) {
+    let filterQuery = [];
+    let isFilter = false;
+    let sqlQuery = `SELECT * FROM issues`
+
+    console.log("======================================");
+    console.log("req.query : ");
+    console.log(req.query);
+    console.log("======================================");
+    if(req.query.cid && req.query.id) {
+      filterQuery.push(`issueid = ${req.query.id}`)
+      isFilter = true;
+    }
+
+    if(req.query.csubject && req.query.subject) {
+      filterQuery.push(`subject = '${req.query.subject}'`)
+      isFilter = true;
+    }
+
+    if(req.query.ctracker && req.query.tracker) {
+      filterQuery.push(`tracker = '${req.query.tracker}'`)
+      isFilter = true;
+    }
+
+    if(isFilter) {
+      sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
+    }
+
+    console.log("======================================");
+    console.log("/details/:id/issues");
+    console.log(sqlQuery);
+    console.log(filterQuery);
+    console.log("======================================");
+
+    db.query(sqlQuery, function(err, issuesData) {
+        res.render('projects/details/issues', {
+          title: "Project Issues",
+          page: "project",
+          query: req.query,
+          idURL: req.params.id,
+          issuesData: issuesData.rows,
+          issuesColumns: JSON.parse(req.session.user.issuescolumns)})
+    });
   });
 
-  router.get('/details/:id/issues', userChecker, function(req, res) {
-    res.render('projects/details/issues', {title: "Project Issues", page: "project", query: req.query, idURL: req.params.id})
+
+
+  router.get('/details/:id/issues/delete/:issueid', userChecker, function(req, res) {
+    db.query(`DELETE FROM issues WHERE issueid = ${req.params.issueid}`, function(err) {
+      res.redirect(`/projects/details/${req.params.id}/issues`);
+    });
+  });
+
+  router.get('/details/:id/issues/edit/:issueid', userChecker, function(req, res) {
+    let sqlQuery = `SELECT * FROM issues WHERE issueid = ${req.params.issueid}`
+    db.query(sqlQuery, function(err, selectedIssueData) {
+      if(err) {
+        console.error(err);
+      }
+      sqlQuery = `SELECT projects.projectid, users.userid, users.firstname || ' ' || users.lastname AS membername,
+      projects.name AS projectname FROM members JOIN users ON members.userid=users.userid
+      JOIN projects ON members.projectid=projects.projectid
+      WHERE members.projectid = ${req.params.id};`
+
+      db.query(sqlQuery, function(err, membersData) {
+        if(err) {
+          console.error(err);
+        }
+        res.render('projects/details/editissues', {
+          title: "Project Issues",
+          page: "project",
+          query: req.query,
+          idURL: req.params.id,
+          issueidURL: req.params.issueid,
+          selectedIssueData: selectedIssueData.rows[0],
+          membersData: membersData.rows
+        });
+      });
+    });
+  });
+
+  router.post('/details/:id/issues/edit/:issueid', userChecker, function(req, res) {
+    let issueid = req.params.issueid;
+    let tracker = req.body.tracker;
+    let subject = req.body.subject;
+    let description = req.body.description;
+    let status = req.body.status;
+    let priority = req.body.priority;
+    let asignee = req.body.asignee;
+    let startDate = req.body.startdate;
+    let dueDate = req.body.duedate;
+    let estimatedTime = req.body.estimatedtime;
+    let percentageDone = req.body.percentagedone;
+
+    let sqlQuery = `UPDATE issues SET tracker = '${tracker}', subject = '${subject}', description = '${description}',
+    status = '${status}', priority = '${priority}', asignee = ${asignee}, startdate = '${startDate}',
+    duedate = '${dueDate}', estimatedtime = ${estimatedTime} WHERE issueid = ${issueid}`
+
+    console.log(sqlQuery);
+
+    db.query(sqlQuery, function(err) {
+      if(err) {
+        console.error(err);
+      }
+      res.redirect(`/projects/details/${req.params.id}/issues`);
+    });
+  });
+
+  router.get('/details/:id/issues/edit/:issueid/deleteimage/:imagename', userChecker, function(req, res) {
+    let sqlQuery = `SELECT files FROM issues WHERE issueid = ${req.params.issueid}`;
+    let fileNameNoExt = req.params.imagename.replace(/\..+$/, '')
+    console.log(fileNameNoExt);
+    db.query(sqlQuery, function(err, fileIssueData) {
+      if(err) {
+        console.error(err);
+      }
+      let fileIssueDataObject = JSON.parse(fileIssueData.rows[0].files);
+      delete fileIssueDataObject[fileNameNoExt]
+      let insertedDataFile = JSON.stringify(fileIssueDataObject);
+      sqlQuery = `UPDATE issues SET files = '${insertedDataFile}' WHERE issueid = ${req.params.issueid}`
+      db.query(sqlQuery, function(err) {
+        if(err) {
+          console.error(err);
+        }
+        res.redirect(`/projects/details/${req.params.id}/issues/edit/${req.params.issueid}`);
+      });
+    });
+  });
+
+  router.get('/details/:id/issues/upload/:issueid', userChecker, function(req, res) {
+    res.render('projects/details/uploadfile', {
+      title: "Project Issues",
+      page: "project",
+      idURL: req.params.id,
+      issueidURL: req.params.issueid
+    });
+  });
+
+  router.post('/details/:id/issues/upload/:issueid', userChecker, function(req, res) {
+    if(!req.files) {
+      return res.status(400).send('No files were uploaded.');
+    }
+    let fileName = crypto.randomBytes(20).toString('hex');
+    let uploadFile = req.files.uploadedfile;
+    let fileExtension = uploadFile.name.split('.').pop();
+    let sqlQuery = ''
+    uploadFile.mv(`${__dirname}/../public/assets/${fileName}.${fileExtension}`, function(err) {
+      if(err) {
+        return res.status(500).send(err);
+      }
+      sqlQuery = `SELECT files FROM issues WHERE issueid = ${req.params.issueid}`;
+      db.query(sqlQuery, function(err, fileIssueData) {
+        if(err) {
+          console.error(err);
+        }
+        let fileIssueDataObject = JSON.parse(fileIssueData.rows[0].files);
+        fileIssueDataObject[fileName] = `${fileName}.${fileExtension}`
+        let insertedDataFile = JSON.stringify(fileIssueDataObject);
+        sqlQuery = `UPDATE issues SET files = '${insertedDataFile}' WHERE issueid = ${req.params.issueid}`;
+        console.log(sqlQuery);
+        db.query(sqlQuery, function(err) {
+          if(err) {
+            console.error(err);
+          }
+          res.redirect(`/projects/details/${req.params.id}/issues`);
+        });
+      });
+    });
+
+
+
+  });
+
+  router.post('/details/:id/issues/issuescolumn', userChecker, function(req, res) {
+    let issuesColumns = JSON.stringify(req.body)
+    req.session.user.issuescolumns = issuesColumns
+    let sqlQuery = `UPDATE users SET issuescolumns = '${issuesColumns}' WHERE userid = ${req.session.user.userid}`
+    db.query(sqlQuery, function(err) {
+      if(err) {
+        console.error(err);
+      }
+      res.redirect(`/projects/details/${req.params.id}/issues`);
+    });
+  });
+
+  router.get('/details/:id/issues/new', userChecker, function(req, res) {
+    let sqlQuery = `SELECT projects.projectid, users.userid, users.firstname || ' ' || users.lastname AS membername,
+    projects.name AS projectname FROM members JOIN users ON members.userid=users.userid
+    JOIN projects ON members.projectid=projects.projectid
+    WHERE members.projectid = ${req.params.id};`
+    db.query(sqlQuery, function(err, membersData) {
+      res.render('projects/details/newissue', {
+        title: "Project Issues",
+        page: "project",
+        query: req.query,
+        idURL: req.params.id,
+        membersData: membersData.rows})
+    });
+  });
+
+  router.post('/details/:id/issues/new', userChecker, function(req, res) {
+    console.log("======================================");
+    console.log("/details/:id/issues/new");
+    console.log("======================================");
+    console.log("======================================");
+    console.log("ini req.body : ");
+    console.log(req.body);
+    console.log("======================================");
+
+    let projectid = req.body.projectid;
+    let tracker = req.body.tracker;
+    let subject = req.body.subject;
+    let description = req.body.description;
+    let status = req.body.status;
+    let priority = req.body.priority;
+    let asignee = req.body.asignee;
+    let startDate = req.body.startdate;
+    let dueDate = req.body.duedate;
+    let estimatedTime = req.body.estimatedtime;
+    let percentageDone = req.body.percentagedone;
+
+    let sqlQuery = `INSERT INTO issues(projectid, tracker, subject, description, status,
+      priority, asignee, startdate, duedate, estimatedtime, percentagedone)
+      VALUES(${projectid}, '${tracker}', '${subject}', '${description}', '${status}',
+    '${priority}', ${asignee}, '${startDate}', '${dueDate}', ${estimatedTime},
+    ${percentageDone})`
+
+    db.query(sqlQuery, function(err) {
+      if(err) {
+        console.error(err);
+      }
+      res.redirect(`/projects/details/${req.params.id}/issues`)
+    });
   });
 
   return router;
