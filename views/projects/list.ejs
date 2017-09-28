@@ -1,6 +1,6 @@
 <% include ../partials/header %>
 <% include ../partials/menu %>
-<div class="container">
+<div class="container" style="background-color: white">
   <h1>Projects</h1>
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -102,7 +102,9 @@
           <%if (listData.length > 0) { %>
             <% for(let i = 0; i<listData.length; i++) { %>
               <tr>
-                <% if(projectColumns.coid) { %><td><%= listData[i].projectid %></td><% } %>
+                <% if(projectColumns.coid) { %>
+                  <td><a href="/projects/details/<%= listData[i].projectid %>/overview"><%= listData[i].projectid %></a></td>
+                    <% } %>
                 <% if(projectColumns.coname) { %><td><%= listData[i].name %></td><% } %>
                 <% if(projectColumns.comembers) { %><td class="col-md-6"><%= listData[i].members.map(function(item) {return `${item.name} (${item.role})` }).join(', ') %></td><% } %>
                 <td>
@@ -124,15 +126,15 @@
           </tbody>
         </table>
         <ul class="pagination">
-      <% if(pagination.page > 1){ %><li><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${pagination.page - 1}`) %>">Previous</a></li> <% } %>
-      <% for(var i = 1; i <= pagination.pages; i++){ %>
-      <li class="<%= (pagination.page == i) ? 'active' : ''%>"><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${i}`) %>"><%= i %></a></li>
-      <% } %>
-      <% if(pagination.pages > pagination.page){ %><li><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${pagination.page + 1}`) %>">Next</a></li> <% } %>
-    </ul>
-    <p><%= `Showing ${pagination.offset + 1} to ${(pagination.offset + pagination.limit > pagination.total) ? pagination.total : pagination.offset + pagination.limit} of ${pagination.total} ${(pagination.total > 1) ? 'entries' : 'entry'}` %></p>
-    <br>
-        <a href="/projects/add" class="btn btn-primary">Add</a>
-      </div>
+          <% if(pagination.page > 1){ %><li><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${pagination.page - 1}`) %>">Previous</a></li> <% } %>
+          <% for(var i = 1; i <= pagination.pages; i++){ %>
+            <li class="<%= (pagination.page == i) ? 'active' : ''%>"><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${i}`) %>"><%= i %></a></li>
+            <% } %>
+            <% if(pagination.pages > pagination.page){ %><li><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${pagination.page + 1}`) %>">Next</a></li> <% } %>
+          </ul>
+          <p><%= `Showing ${pagination.offset + 1} to ${(pagination.offset + pagination.limit > pagination.total) ? pagination.total : pagination.offset + pagination.limit} of ${pagination.total} ${(pagination.total > 1) ? 'entries' : 'entry'}` %></p>
+          <br>
+          <a href="/projects/add" class="btn btn-primary">Add</a>
+        </div>
 
-      <% include ../partials/footer %>
+        <% include ../partials/footer %>

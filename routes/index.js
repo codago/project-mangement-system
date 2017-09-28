@@ -4,17 +4,22 @@ var passwordHash = require('password-hash');
 
 /* GET home page. */
 module.exports = function(db) {
+
   router.get('/', function(req, res, next) {
-    res.render('login', { title: 'Login'});
+    res.render('users/index');
   });
 
-  router.post('/', function(req, res, next) {
+  router.get('/login', function(req, res, next) {
+    res.render('login', { title: 'Login', message: req.flash('loginMessage')});
+  });
+
+  router.post('/login', function(req, res, next) {
     console.log("masuk", req.body);
     db.query(`SELECT * FROM users WHERE email = '${req.body.email}'`, (err, data) => {
       if(err) {
         console.error(err);
         req.flash('loginMessage', 'something wrong please call administrator');
-        return res.redirect('/')
+        return res.redirect('/login')
       }
       console.log("masuk2");
       if(data.rows.length > 0) {
@@ -25,12 +30,12 @@ module.exports = function(db) {
           return res.redirect('/projects')
         } else {
           req.flash('loginMessage', 'password is not match');
-          return res.redirect('/')
+          return res.redirect('/login')
         }
 
       } else {
         req.flash('loginMessage', "email is not exist")
-        return res.redirect('/')
+        return res.redirect('/login')
       }
     });
   });
