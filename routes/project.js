@@ -9,9 +9,10 @@ module.exports = function(db) {
   router.get('/', userChecker, function(req, res, next) {
     console.log("router(/projects), method(get), req.session: ");
     console.log(req.session);
+    let url = (req.url == '/') ? '/?page=1' : req.url; //fungsi ini d tambah karna kita lagi bikin page untuk tampilan awal dan nunjukin kalo ini page 1
     let filterQuery = [];
     let isFilter = false;
-    let sqlQuery = 'SELECT * FROM projects'
+    let sqlQuery = 'SELECT count(*) as total FROM projects' //query hasil dari line ini di masukian ke data di line 30
 
     if(req.query.cid && req.query.id) {
       filterQuery.push(`projectid = ${req.query.id}`)
@@ -25,16 +26,34 @@ module.exports = function(db) {
       filterQuery.push(`projectid IN(SELECT projectid FROM members WHERE userid = ${req.query.member})`)
       isFilter = true;
     }
-    if(isFilter) {
-      sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
-    }
 
-      sqlQuery += ' ORDER BY projectid ASC'
-    db.query(sqlQuery, function(err, projectsData) {
-      if(err) {
-        console.err(err);
+    db.query(sqlQuery, (err, data) => {
+      if (err) {
+        console.error(err);
+        return res.send(err);
       }
-      var sqlQuery = `SELECT members.projectid,
+
+      let total = data.rows[0].total;
+      let page = Number (req.query.page) || 1
+      let limit = 3
+      let offset = (page-1) * 3
+      let pages = (total == 0) ? 1 : Math.ceil(total/limit);
+
+      sqlQuery = 'SELECT * FROM projects';
+      if(isFilter){
+        sqlQuery += ' WHERE ' + filter.join('AND')
+      }
+      sqlQuery += ` ORDER BY projectid ASC`;
+      sqlQuery += ` LIMIT ${limit} OFFSET ${offset}`;
+
+      //select with pagination
+      db.query(sqlQuery, (err, projectsData) => {
+        if (err) {
+          console.error(err);
+          return res.send(err);
+        }
+
+      sqlQuery = `SELECT members.projectid,
       users.firstname || ' ' || users.lastname AS name, users.role FROM members,
       users WHERE members.userid=users.userid;`
       db.query(sqlQuery, function(err, membersData) {
@@ -51,11 +70,12 @@ module.exports = function(db) {
             console.err(err);
           }
           console.log(req.session.user);
-          res.render('projects/list', { title: 'Express', page: "project", listData: projectsData.rows, userData: userData.rows, projectColumns: JSON.parse(req.session.user.projectcolumns), query: req.query, user: req.session.user });
+        res.render('projects/list', { title: 'Express', page: "project", pagination:{page: page, limit: limit, offset: offset, pages: pages, total: total, url: url}, listData: projectsData.rows, userData: userData.rows, projectColumns: JSON.parse(req.session.user.projectcolumns), query: req.query, user: req.session.user });
         });
       });
     });
   });
+});
 
   router.post('/projectcolumn', userChecker, function(req, res) {
     let projectColumns = JSON.stringify(req.body);
@@ -78,7 +98,6 @@ module.exports = function(db) {
   });
 
   router.post('/add', userChecker, function(req, res) {
-<<<<<<< HEAD
      db.query(`INSERT INTO projects(name) VALUES('${req.body.name}')`, function(err) {
        if(err) {
          console.error(err);
@@ -104,29 +123,6 @@ module.exports = function(db) {
        });
      });
    });
-=======
-    db.query(`INSERT INTO projects(name) VALUES('${req.body.name}')`, function(err) {
-      if(err) {
-        console.error(err);
-      }
-      db.query("SELECT projectid FROM projects ORDER BY projectid DESC LIMIT 1", function(err, projectId) {
-        if(err) {
-          console.error(err);
-        }
-        let insertData = []
-        for(var x = 0; x<req.body.members.length; x++) {
-          insertData.push(`(${projectId.rows[0].projectid}, ${req.body.members[x]})`)
-        }
-        db.query(`INSERT INTO members(projectid, userid) VALUES ${insertData.join(',')}`, function(err) {
-          if(err) {
-            console.error(err);
-          }
-          res.redirect('/projects');
-        });
-      });
-    });
-  });
->>>>>>> 96db1580fe7017ab2b8c60fa4632e8ecc3b00085
 
   router.get('/delete/:id', userChecker, function(req, res) {
     db.query(`DELETE FROM projects WHERE projectid = ${req.params.id}`, function(err) {
@@ -166,15 +162,9 @@ module.exports = function(db) {
           console.error(err);
         }
         let insertData = []
-<<<<<<< HEAD
           for(var x = 0; x<req.body.members.length; x++) {
           insertData.push(`(${req.params.id}, ${req.body.members[x]})`)
         };
-=======
-        for(var x = 0; x<req.body.members.length; x++) {
-          insertData.push(`(${req.params.id}, ${req.body.members[x]})`)
-        }
->>>>>>> 96db1580fe7017ab2b8c60fa4632e8ecc3b00085
         db.query(`INSERT INTO members(projectid, userid) VALUES ${insertData.join(',')}`, function(err) {
           if(err) {
             console.error(err);
