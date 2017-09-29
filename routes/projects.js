@@ -279,47 +279,125 @@ module.exports = function(db) {
   });
 
   router.get('/details/:id/issues', userChecker, function(req, res) {
-    let filterQuery = [];
-    let isFilter = false;
-    let sqlQuery = `SELECT * FROM issues`
 
-    console.log("======================================");
-    console.log("req.query : ");
-    console.log(req.query);
-    console.log("======================================");
-    if(req.query.cid && req.query.id) {
-      filterQuery.push(`issueid = ${req.query.id}`)
-      isFilter = true;
-    }
 
-    if(req.query.csubject && req.query.subject) {
-      filterQuery.push(`subject = '${req.query.subject}'`)
-      isFilter = true;
-    }
+    let sqlQuery = `SELECT projects.projectid, users.userid, users.firstname || ' ' || users.lastname AS name,
+    projects.name AS projectname FROM members JOIN users ON members.userid=users.userid
+    JOIN projects ON members.projectid=projects.projectid
+    WHERE members.projectid = ${req.params.id};`
 
-    if(req.query.ctracker && req.query.tracker) {
-      filterQuery.push(`tracker = '${req.query.tracker}'`)
-      isFilter = true;
-    }
+    db.query(sqlQuery, function(err, membersData) {
+      if(err) {
+        console.error(err);
+      }
 
-    if(isFilter) {
-      sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
-    }
+      let filterQuery = [];
+      let isFilter = false;
+      sqlQuery = 'SELECT count(*) AS total FROM issues'
 
-    console.log("======================================");
-    console.log("/details/:id/issues");
-    console.log(sqlQuery);
-    console.log(filterQuery);
-    console.log("======================================");
 
-    db.query(sqlQuery, function(err, issuesData) {
-        res.render('projects/details/issues', {
-          title: "Project Issues",
-          page: "project",
-          query: req.query,
-          idURL: req.params.id,
-          issuesData: issuesData.rows,
-          issuesColumns: JSON.parse(req.session.user.issuescolumns)})
+      console.log("======================================");
+      console.log("req.query : ");
+      console.log(req.query);
+      console.log("======================================");
+      if(req.query.cid && req.query.id) {
+        filterQuery.push(`issueid = ${req.query.id}`)
+        isFilter = true;
+      }
+
+      if(req.query.csubject && req.query.subject) {
+        filterQuery.push(`subject LIKE '%${req.query.subject}%'`)
+        isFilter = true;
+      }
+
+      if(req.query.ctracker && req.query.tracker) {
+        filterQuery.push(`tracker = '${req.query.tracker}'`)
+        isFilter = true;
+      }
+
+      if(req.query.cdescription && req.query.description) {
+        filterQuery.push(`description LIKE '%${req.query.description}%'`)
+        isFilter = true;
+      }
+
+      if(req.query.cstatus && req.query.status) {
+        filterQuery.push(`status = '${req.query.status}'`)
+        isFilter = true;
+      }
+
+      if(req.query.cpriority && req.query.priority) {
+        filterQuery.push(`priority = '${req.query.priority}'`)
+        isFilter = true;
+      }
+
+      if(req.query.casignee && req.query.asignee) {
+        filterQuery.push(`asignee = ${req.query.asignee}`)
+        isFilter = true;
+      }
+
+      if(req.query.cstartdate && req.query.startdate) {
+        filterQuery.push(`startdate = '${req.query.startdate}'`)
+        isFilter = true;
+      }
+
+      if(req.query.cduedate && req.query.duedate) {
+        filterQuery.push(`duedate = '${req.query.duedate}'`)
+        isFilter = true;
+      }
+
+
+      if(req.query.cestimatedtime && req.query.estimatedtime) {
+        filterQuery.push(`estimatedtime = '${req.query.estimatedtime}'`)
+        isFilter = true;
+      }
+
+      if(req.query.cpercentagedone && req.query.percentagedone) {
+        filterQuery.push(`percentagedone = ${req.query.percentagedone}`)
+        isFilter = true;
+      }
+
+      if(isFilter) {
+        sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
+      }
+
+      console.log("======================================");
+      console.log("/details/:id/issues");
+      console.log(sqlQuery);
+      console.log(filterQuery);
+      console.log("======================================");
+
+      db.query(sqlQuery, function(err, countData) {
+        //pagination
+        console.log("this is url (issue): ", req.url);
+        let url = (req.url == "/") ? "/?page=1" : req.url;
+        console.log("this is url (issue) variable: ", url);
+        let page = Number(req.query.page) || 1
+        let limit = 3
+        let offset = (page-1) * 3
+        let total = countData.rows[0].total;
+        let pages = (total == 0) ? 1 : Math.ceil(total/limit);
+        let pagination = {page: page, limit: limit, offset: offset, pages: pages, total: total, url: url}
+
+        sqlQuery = `SELECT * FROM issues`
+        if(isFilter) {
+          sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
+        }
+        sqlQuery +=  ` ORDER BY issueid ASC LIMIT ${limit} OFFSET ${offset}`
+
+        db.query(sqlQuery, function(err, issuesData) {
+            res.render('projects/details/issues', {
+              title: "Project Issues",
+              page: "project",
+              query: req.query,
+              idURL: req.params.id,
+              issuesData: issuesData.rows,
+              issuesColumns: JSON.parse(req.session.user.issuescolumns),
+              membersData: membersData.rows,
+              pagination: pagination})
+        });
+
+      });
+
     });
   });
 
@@ -498,12 +576,13 @@ module.exports = function(db) {
     let dueDate = req.body.duedate;
     let estimatedTime = req.body.estimatedtime;
     let percentageDone = req.body.percentagedone;
+    let files = req.body.files;
 
     let sqlQuery = `INSERT INTO issues(projectid, tracker, subject, description, status,
-      priority, asignee, startdate, duedate, estimatedtime, percentagedone)
+      priority, asignee, startdate, duedate, estimatedtime, percentagedone, files)
       VALUES(${projectid}, '${tracker}', '${subject}', '${description}', '${status}',
     '${priority}', ${asignee}, '${startDate}', '${dueDate}', ${estimatedTime},
-    ${percentageDone})`
+    ${percentageDone}, '${files}')`
 
     db.query(sqlQuery, function(err) {
       if(err) {
