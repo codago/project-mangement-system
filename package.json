@@ -15,6 +15,7 @@
     "express": "~4.15.2",
     "express-fileupload": "^0.2.0",
     "express-session": "^1.15.5",
+    "moment": "^2.18.1",
     "morgan": "~1.8.1",
     "password-hash": "^1.2.2",
     "pg": "^7.3.0",

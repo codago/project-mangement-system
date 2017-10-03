@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const userChecker = require('../helper/userchecker')
 const crypto = require("crypto");
+const moment = require('moment');
+
 
 module.exports = function(db) {
   /* GET home page. */
@@ -256,9 +258,28 @@ module.exports = function(db) {
   });
 
   router.get('/details/:id/members/delete/:iddelete', userChecker, function(req, res) {
-    db.query(`DELETE FROM members WHERE id = ${req.params.iddelete}`, function(err) {
-      res.redirect(`/projects/details/${req.params.id}/members`);
-    })
+    let sqlQuery = `SELECT * FROM projects WHERE projectid = ${req.params.id}`
+    db.query(sqlQuery, function(err, projectData) {
+      let projectName = projectData.rows[0].name
+      let projectid = projectData.rows[0].projectid
+      let activityTitle = `${projectName} #${projectid}`
+      let activityDescription = "Delete a Member"
+      let activityAuthor = `${req.session.user.firstname} ${req.session.user.lastname}`
+      let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
+      let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
+      let activityHour = `${moment().format("HH:mm")}`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+
+      db.query(sqlQuery, function(err) {
+        if(err) {
+          console.error(err)
+        }
+        db.query(`DELETE FROM members WHERE id = ${req.params.iddelete}`, function(err) {
+          res.redirect(`/projects/details/${req.params.id}/members`);
+        });
+      });
+    });
   });
 
   router.post('/details/:id/members/membercolumn', userChecker, function(req, res) {
@@ -275,7 +296,61 @@ module.exports = function(db) {
   });
 
   router.get('/details/:id/addmember', userChecker, function(req, res) {
-    res.redirect(`/projects/edit/${req.params.id}`)
+    db.query("SELECT * FROM users", function(err, userData) {
+      if(err) {
+        console.error(err);
+      }
+      db.query(`SELECT projects.projectid, projects.name, members.userid FROM projects JOIN members ON projects.projectid=members.projectid WHERE projects.projectid= ${req.params.id}`, function(err, data) {
+        if(err) {
+          console.error(err);
+        }
+        res.render('projects/details/addmember', {title: "Add Member Project", page: "project", idURL: req.params.id, data: data.rows, userData: userData.rows, members: data.rows.map(function(item) {return item.userid})})
+      });
+    })
+  });
+
+  router.post('/details/:id/addmember', userChecker, function(req, res) {
+    let sqlQuery = `SELECT * FROM projects WHERE projectid = ${req.params.id}`
+    db.query(sqlQuery, function(err, projectData) {
+      if(err) {
+        console.error(err);
+      }
+      let projectName = projectData.rows[0].name
+      let activityTitle = `${projectName}`
+      let activityDescription = "Edit Project Member"
+      let activityAuthor = `${req.session.user.firstname} ${req.session.user.lastname}`
+      let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
+      let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
+      let activityHour = `${moment().format("HH:mm")}`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+
+      db.query(sqlQuery, function(err){
+        if(err) {
+          console.error(err)
+        }
+        db.query(`UPDATE projects SET name = '${req.body.name}' WHERE projectid = ${req.params.id}`, function(err) {
+          if(err) {
+            console.error(err)
+          }
+          db.query(`DELETE FROM members WHERE projectid = ${req.params.id}`, function(err) {
+            if(err) {
+              console.error(err);
+            }
+            let insertData = []
+            for(var x = 0; x<req.body.members.length; x++) {
+              insertData.push(`(${req.params.id}, ${req.body.members[x]})`)
+            }
+            db.query(`INSERT INTO members(projectid, userid) VALUES ${insertData.join(',')}`, function(err) {
+              if(err) {
+                console.error(err);
+              }
+              res.redirect(`/projects/details/${req.params.id}/members`)
+            });
+          });
+        });
+      });
+      });
   });
 
   router.get('/details/:id/issues', userChecker, function(req, res) {
@@ -404,8 +479,28 @@ module.exports = function(db) {
 
 
   router.get('/details/:id/issues/delete/:issueid', userChecker, function(req, res) {
-    db.query(`DELETE FROM issues WHERE issueid = ${req.params.issueid}`, function(err) {
-      res.redirect(`/projects/details/${req.params.id}/issues`);
+    let sqlQuery = `SELECT * FROM issues WHERE issueid = ${req.params.issueid}`;
+    db.query(sqlQuery, function(err, issueData) {
+      let subject = issueData.rows[0].subject
+      let tracker = issueData.rows[0].tracker
+      let projectid = issueData.rows[0].projectid
+      let status = issueData.rows[0].status
+      let activityTitle = `${subject} ${tracker} #${projectid} (${status})`
+      let activityDescription = "Delete Issue"
+      let activityAuthor = `${req.session.user.firstname} ${req.session.user.lastname}`
+      let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
+      let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
+      let activityHour = `${moment().format("HH:mm")}`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+      db.query(sqlQuery, function(err) {
+        if(err) {
+          console.error(err);
+        }
+        db.query(`DELETE FROM issues WHERE issueid = ${req.params.issueid}`, function(err) {
+          res.redirect(`/projects/details/${req.params.id}/issues`);
+        });
+      });
     });
   });
 
@@ -439,6 +534,7 @@ module.exports = function(db) {
 
   router.post('/details/:id/issues/edit/:issueid', userChecker, function(req, res) {
     let issueid = req.params.issueid;
+    let projectid = req.params.id
     let tracker = req.body.tracker;
     let subject = req.body.subject;
     let description = req.body.description;
@@ -460,19 +556,42 @@ module.exports = function(db) {
       if(err) {
         console.error(err);
       }
+      let activityTitle = `${subject} ${tracker} #${projectid} (${status})`
+      let activityDescription = "Edit Issue"
+      let activityAuthor = `${req.session.user.firstname} ${req.session.user.lastname}`
+      let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
+      let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
+      let activityHour = `${moment().format("HH:mm")}`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+      console.log("====================================");
+      console.log("/details/:id/issues/edit/:issueid");
+      console.log("ini sql query activity: ");
+      console.log(sqlQuery);
+      console.log("====================================");
+      db.query(sqlQuery, function(err) {
+        if(err) {
+          console.error(err)
+        }
+      });
       res.redirect(`/projects/details/${req.params.id}/issues`);
     });
   });
 
   router.get('/details/:id/issues/edit/:issueid/deleteimage/:imagename', userChecker, function(req, res) {
-    let sqlQuery = `SELECT files FROM issues WHERE issueid = ${req.params.issueid}`;
+    let sqlQuery = `SELECT * FROM issues WHERE issueid = ${req.params.issueid}`;
     let fileNameNoExt = req.params.imagename.replace(/\..+$/, '')
     console.log(fileNameNoExt);
-    db.query(sqlQuery, function(err, fileIssueData) {
+    db.query(sqlQuery, function(err, issueData) {
       if(err) {
         console.error(err);
       }
-      let fileIssueDataObject = JSON.parse(fileIssueData.rows[0].files);
+      console.log("====================================");
+      console.log("/details/:id/issues/edit/:issueid/deleteimage/:imagename");
+      console.log("issueData.rows: ");
+      console.log(issueData.rows);
+      console.log("====================================");
+      let fileIssueDataObject = JSON.parse(issueData.rows[0].files);
       delete fileIssueDataObject[fileNameNoExt]
       let insertedDataFile = JSON.stringify(fileIssueDataObject);
       sqlQuery = `UPDATE issues SET files = '${insertedDataFile}' WHERE issueid = ${req.params.issueid}`
@@ -480,7 +599,30 @@ module.exports = function(db) {
         if(err) {
           console.error(err);
         }
-        res.redirect(`/projects/details/${req.params.id}/issues/edit/${req.params.issueid}`);
+        let subject = issueData.rows[0].subject
+        let tracker = issueData.rows[0].tracker
+        let projectid = issueData.rows[0].projectid
+        let status = issueData.rows[0].status
+        let activityTitle = `${subject} ${tracker} #${projectid} (${status})`
+        let activityDescription = "Delete a Picture"
+        let activityAuthor = `${req.session.user.firstname} ${req.session.user.lastname}`
+        let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
+        let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
+        let activityHour = `${moment().format("HH:mm")}`
+        sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
+        VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+        console.log("====================================");
+        console.log("/details/:id/issues/edit/:issueid/deleteimage/:imagename");
+        console.log("ini sql query activity: ");
+        console.log(sqlQuery);
+        console.log("====================================");
+        db.query(sqlQuery, function(err) {
+          if(err) {
+            console.error(err)
+          }
+          res.redirect(`/projects/details/${req.params.id}/issues/edit/${req.params.issueid}`);
+
+        });
       });
     });
   });
@@ -506,12 +648,19 @@ module.exports = function(db) {
       if(err) {
         return res.status(500).send(err);
       }
-      sqlQuery = `SELECT files FROM issues WHERE issueid = ${req.params.issueid}`;
-      db.query(sqlQuery, function(err, fileIssueData) {
+      sqlQuery = `SELECT * FROM issues WHERE issueid = ${req.params.issueid}`;
+      db.query(sqlQuery, function(err, issueData) {
         if(err) {
           console.error(err);
         }
-        let fileIssueDataObject = JSON.parse(fileIssueData.rows[0].files);
+
+        console.log("====================================");
+        console.log("/details/:id/issues/upload/:issueid");
+        console.log("issueData.rows: ");
+        console.log(issueData.rows);
+        console.log("====================================");
+
+        let fileIssueDataObject = JSON.parse(issueData.rows[0].files);
         fileIssueDataObject[fileName] = `${fileName}.${fileExtension}`
         let insertedDataFile = JSON.stringify(fileIssueDataObject);
         sqlQuery = `UPDATE issues SET files = '${insertedDataFile}' WHERE issueid = ${req.params.issueid}`;
@@ -520,7 +669,31 @@ module.exports = function(db) {
           if(err) {
             console.error(err);
           }
-          res.redirect(`/projects/details/${req.params.id}/issues`);
+          let subject = issueData.rows[0].subject
+          let tracker = issueData.rows[0].tracker
+          let projectid = issueData.rows[0].projectid
+          let status = issueData.rows[0].status
+          let activityTitle = `${subject} ${tracker} #${projectid} (${status})`
+          let activityDescription = "Upload a Picture"
+          let activityAuthor = `${req.session.user.firstname} ${req.session.user.lastname}`
+          let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
+          let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
+          let activityHour = `${moment().format("HH:mm")}`
+          sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
+          VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+
+          console.log("====================================");
+          console.log("/details/:id/issues/upload/:issueid");
+          console.log("ini sql query ke table activiety :");
+          console.log(sqlQuery);
+          console.log("====================================");
+          db.query(sqlQuery,function(err) {
+            if(err) {
+              console.error(err);
+            }
+            res.redirect(`/projects/details/${req.params.id}/issues`);
+          })
+
         });
       });
     });
@@ -588,8 +761,61 @@ module.exports = function(db) {
       if(err) {
         console.error(err);
       }
-      res.redirect(`/projects/details/${req.params.id}/issues`)
+      console.log("======================================");
+      console.log("/details/:id/issues/new");
+      console.log("req.session.user ", req.session.user);
+      console.log("======================================");
+      let activityTitle = `${subject} ${tracker} #${projectid} (${status})`
+      let activityDescription = "Add Issue"
+      let activityAuthor = `${req.session.user.firstname} ${req.session.user.lastname}`
+      let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
+      //let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
+      let activityHour = `${moment().format("HH:mm")}`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+      console.log("ini query activity: ", sqlQuery);
+      db.query(sqlQuery, function(err) {
+        if(err) {
+          console.error(err);
+        }
+        res.redirect(`/projects/details/${req.params.id}/issues`)
+      });
     });
+  });
+
+  router.get('/details/:id/activity', userChecker, function(req, res) {
+    //hours: "2017-09-30 14:00:00.931354".split('.')[0].split(' ')[1].slice(0, -3)
+    //date: "2017-09-30 14:00:00.931354".split('.')[0].split(' ')[0]
+
+    //date: [
+    //[ tangga1, [timestamp1, timestamp2] ],
+    //[tangga2, [timestamp1, timestamp2, timestamp3] ]
+    // ]
+    let activityCurrentDate = `${moment().format('YYYY-MM-DD')}`
+    let activietyAWeekAgo = `${moment().subtract(7, 'days').format('YYYY-MM-DD')}`
+    let sqlQuery = `SELECT * FROM activity WHERE date BETWEEN '${activietyAWeekAgo}' AND '${activityCurrentDate}'`;
+    console.log(sqlQuery);
+    db.query(sqlQuery, function(err, data) {
+      let activityData = data.rows;
+      let dateViewData = [ [,],  [,], [,], [,], [,], [,], [,] ];
+      for(let x = 0; x< 7; x++) {
+        dateViewData[x][0] = moment().subtract(x, 'days').format('YYYY-MM-DD');
+        dateViewData[x][1] = moment(dateViewData[x][0], 'YYYY-MM-DD').format('dddd, MMMM D, YYYY')
+        dateViewData[x].push(activityData.filter(function(item){return item.date === dateViewData[x][0]}));
+      }
+      console.log(dateViewData);
+      console.log();
+      res.render('projects/details/activity', {
+        title: "Project Activity",
+        page: "project",
+        idURL: req.params.id,
+        date: {today: moment().format('DD/MM/YYYY'),
+              weekAgo: moment().subtract('days', 7).format('DD/MM/YYYY')},
+        logDate: dateViewData
+      });
+    });
+
+
   });
 
   return router;
