@@ -15,7 +15,12 @@ module.exports = function(db) {
   router.get('/profile', userChecker, function(req, res, next) {
     console.log("router(/profile), method(get), req.session: ");
     console.log(req.session);
-    res.render('users/profile', {title: "user profile", page: "profile", userData: req.session.user, test: "testaja"});
+    res.render('users/profile', {
+      title: "user profile",
+      page: "profile",
+      userData: req.session.user,
+      userSession: req.session.user
+    });
   });
 
   router.post('/profile', userChecker, function(req, res) {

@@ -79,7 +79,17 @@ module.exports = function(db) {
             if(err) {
               console.err(err);
             }
-            res.render('projects/list', { title: 'Express', page: "project", listData: projectsData.rows, userData: userData.rows, projectColumns: JSON.parse(req.session.user.projectcolumns), query: req.query, pagination: pagination });
+            console.log("ini type session: ", typeof req.session.user)
+            res.render('projects/list', {
+              title: 'Express',
+              page: "project",
+              listData: projectsData.rows,
+              userData: userData.rows,
+              projectColumns: JSON.parse(req.session.user.projectcolumns),
+              query: req.query,
+              pagination: pagination,
+              userSession: req.session.user
+            });
           });
         });
       });
@@ -103,15 +113,26 @@ module.exports = function(db) {
   });
 
   router.get('/add', userChecker, function(req, res) {
+    if(req.session.user.privilege !== "Admin") {
+      return res.redirect('/projects')
+    }
     db.query("SELECT * FROM users", function(err, userData) {
       if(err) {
         console.error(err);
       }
-      res.render('projects/add', {title: 'Add projects', page: "project", userData: userData.rows});
+      res.render('projects/add', {
+        title: 'Add projects',
+        page: "project",
+        userData: userData.rows,
+        userSession: req.session.user
+      });
     });
   });
 
   router.post('/add', userChecker, function(req, res) {
+    if(req.session.user.privilege !== "Admin") {
+      return res.redirect('/projects')
+    }
     db.query(`INSERT INTO projects(name) VALUES('${req.body.name}')`, function(err) {
       if(err) {
         console.error(err);
@@ -157,7 +178,14 @@ module.exports = function(db) {
         if(err) {
           console.error(err);
         }
-        res.render('projects/edit', {title: "Edit Project", page: "project", data: data.rows, userData: userData.rows, members: data.rows.map(function(item) {return item.userid})})
+        res.render('projects/edit', {
+          title: "Edit Project",
+          page: "project",
+          data: data.rows,
+          userData: userData.rows,
+          members: data.rows.map(function(item) {return item.userid}),
+          userSession: req.session.user
+        });
       });
     })
   });
@@ -191,7 +219,13 @@ module.exports = function(db) {
     JOIN projects ON members.projectid=projects.projectid
     WHERE members.projectid = ${req.params.id};`
     db.query(sqlQuery, function(err, projectData) {
-      res.render('projects/details/overview', {title: "Project Details", page: "project", projectData: projectData.rows, idURL: req.params.id});
+      res.render('projects/details/overview', {
+        title: "Project Details",
+        page: "project",
+        projectData: projectData.rows,
+        idURL: req.params.id,
+        userSession: req.session.user
+      });
     });
   });
 
@@ -252,7 +286,8 @@ module.exports = function(db) {
           idURL: req.params.id,
           query: req.query,
           memberListData: memberListData.rows,
-          memberColumns: JSON.parse(req.session.user.membercolumns)
+          memberColumns: JSON.parse(req.session.user.membercolumns),
+          userSession: req.session.user
         });
     });
   });
@@ -268,8 +303,8 @@ module.exports = function(db) {
       let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
       let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
       let activityHour = `${moment().format("HH:mm")}`
-      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
-      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours, projectid)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}', ${req.params.id})`
 
       db.query(sqlQuery, function(err) {
         if(err) {
@@ -304,7 +339,15 @@ module.exports = function(db) {
         if(err) {
           console.error(err);
         }
-        res.render('projects/details/addmember', {title: "Add Member Project", page: "project", idURL: req.params.id, data: data.rows, userData: userData.rows, members: data.rows.map(function(item) {return item.userid})})
+        res.render('projects/details/addmember', {
+          title: "Add Member Project",
+          page: "project",
+          idURL: req.params.id,
+          data: data.rows,
+          userData: userData.rows,
+          members: data.rows.map(function(item) {return item.userid}),
+          userSession: req.session.user
+        });
       });
     })
   });
@@ -322,8 +365,8 @@ module.exports = function(db) {
       let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
       let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
       let activityHour = `${moment().format("HH:mm")}`
-      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
-      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours, projectid)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}', ${req.params.id})`
 
       db.query(sqlQuery, function(err){
         if(err) {
@@ -354,8 +397,6 @@ module.exports = function(db) {
   });
 
   router.get('/details/:id/issues', userChecker, function(req, res) {
-
-
     let sqlQuery = `SELECT projects.projectid, users.userid, users.firstname || ' ' || users.lastname AS name,
     projects.name AS projectname FROM members JOIN users ON members.userid=users.userid
     JOIN projects ON members.projectid=projects.projectid
@@ -432,7 +473,10 @@ module.exports = function(db) {
       }
 
       if(isFilter) {
+        filterQuery.push(`projectid = ${req.params.id}`)
         sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
+      } else {
+        sqlQuery += ` WHERE projectid = ${req.params.id}`;
       }
 
       console.log("======================================");
@@ -454,9 +498,14 @@ module.exports = function(db) {
         let pagination = {page: page, limit: limit, offset: offset, pages: pages, total: total, url: url}
 
         sqlQuery = `SELECT * FROM issues`
+
         if(isFilter) {
+          filterQuery.push(`projectid = ${req.params.id}`)
           sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
+        } else {
+          sqlQuery += ` WHERE projectid = ${req.params.id}`;
         }
+
         sqlQuery +=  ` ORDER BY issueid ASC LIMIT ${limit} OFFSET ${offset}`
 
         db.query(sqlQuery, function(err, issuesData) {
@@ -468,11 +517,11 @@ module.exports = function(db) {
               issuesData: issuesData.rows,
               issuesColumns: JSON.parse(req.session.user.issuescolumns),
               membersData: membersData.rows,
-              pagination: pagination})
+              pagination: pagination,
+              userSession: req.session.user
+            });
         });
-
       });
-
     });
   });
 
@@ -491,8 +540,8 @@ module.exports = function(db) {
       let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
       let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
       let activityHour = `${moment().format("HH:mm")}`
-      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
-      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours, projectid)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}', ${req.params.id})`
       db.query(sqlQuery, function(err) {
         if(err) {
           console.error(err);
@@ -526,7 +575,8 @@ module.exports = function(db) {
           idURL: req.params.id,
           issueidURL: req.params.issueid,
           selectedIssueData: selectedIssueData.rows[0],
-          membersData: membersData.rows
+          membersData: membersData.rows,
+          userSession: req.session.user
         });
       });
     });
@@ -562,8 +612,8 @@ module.exports = function(db) {
       let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
       let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
       let activityHour = `${moment().format("HH:mm")}`
-      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
-      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours, projectid)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}', ${req.params.id})`
       console.log("====================================");
       console.log("/details/:id/issues/edit/:issueid");
       console.log("ini sql query activity: ");
@@ -609,8 +659,8 @@ module.exports = function(db) {
         let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
         let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
         let activityHour = `${moment().format("HH:mm")}`
-        sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
-        VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+        sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours, projectid)
+        VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}', ${req.params.id})`
         console.log("====================================");
         console.log("/details/:id/issues/edit/:issueid/deleteimage/:imagename");
         console.log("ini sql query activity: ");
@@ -632,7 +682,8 @@ module.exports = function(db) {
       title: "Project Issues",
       page: "project",
       idURL: req.params.id,
-      issueidURL: req.params.issueid
+      issueidURL: req.params.issueid,
+      userSession: req.session.user
     });
   });
 
@@ -679,8 +730,8 @@ module.exports = function(db) {
           let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
           let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
           let activityHour = `${moment().format("HH:mm")}`
-          sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
-          VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+          sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours, projectid)
+          VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}', ${req.params.id})`
 
           console.log("====================================");
           console.log("/details/:id/issues/upload/:issueid");
@@ -725,7 +776,9 @@ module.exports = function(db) {
         page: "project",
         query: req.query,
         idURL: req.params.id,
-        membersData: membersData.rows})
+        membersData: membersData.rows,
+        userSession: req.session.user
+      });
     });
   });
 
@@ -771,8 +824,8 @@ module.exports = function(db) {
       let activityCurrentDate = `${moment().format("YYYY-MM-DD")}`
       //let activietyAWeekAgo = `${moment().subtract(7, 'days').format('DD/MM/YYYY')}`
       let activityHour = `${moment().format("HH:mm")}`
-      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours)
-      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}')`
+      sqlQuery = `INSERT INTO activity(title, description, author, time, date, hours, projectid)
+      VALUES('${activityTitle}', '${activityDescription}', '${activityAuthor}', NOW(), '${activityCurrentDate}', '${activityHour}', ${req.params.id})`
       console.log("ini query activity: ", sqlQuery);
       db.query(sqlQuery, function(err) {
         if(err) {
@@ -784,16 +837,9 @@ module.exports = function(db) {
   });
 
   router.get('/details/:id/activity', userChecker, function(req, res) {
-    //hours: "2017-09-30 14:00:00.931354".split('.')[0].split(' ')[1].slice(0, -3)
-    //date: "2017-09-30 14:00:00.931354".split('.')[0].split(' ')[0]
-
-    //date: [
-    //[ tangga1, [timestamp1, timestamp2] ],
-    //[tangga2, [timestamp1, timestamp2, timestamp3] ]
-    // ]
     let activityCurrentDate = `${moment().format('YYYY-MM-DD')}`
     let activietyAWeekAgo = `${moment().subtract(7, 'days').format('YYYY-MM-DD')}`
-    let sqlQuery = `SELECT * FROM activity WHERE date BETWEEN '${activietyAWeekAgo}' AND '${activityCurrentDate}'`;
+    let sqlQuery = `SELECT * FROM activity WHERE projectid = ${req.params.id} AND date BETWEEN '${activietyAWeekAgo}' AND '${activityCurrentDate}'`;
     console.log(sqlQuery);
     db.query(sqlQuery, function(err, data) {
       let activityData = data.rows;
@@ -811,11 +857,10 @@ module.exports = function(db) {
         idURL: req.params.id,
         date: {today: moment().format('DD/MM/YYYY'),
               weekAgo: moment().subtract('days', 7).format('DD/MM/YYYY')},
-        logDate: dateViewData
+        logDate: dateViewData,
+        userSession: req.session.user
       });
     });
-
-
   });
 
   return router;

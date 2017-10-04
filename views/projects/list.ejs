@@ -138,7 +138,7 @@
         <br>
 
 
-        <a href="/projects/add" class="btn btn-primary">Add</a>
+        <% if(userSession.privilege === "Admin") { %><a href="/projects/add" class="btn btn-primary">Add</a><% } %>
       </div>
 
       <% include ../partials/footer %>

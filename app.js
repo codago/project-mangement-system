@@ -23,7 +23,7 @@ const pool = new Pool(
 var index = require("./routes/index")(pool);
 var users = require("./routes/users")(pool);
 var projects = require("./routes/projects")(pool);
-
+var settings = require("./routes/settings")(pool);
 
 var app = express();
 
@@ -55,6 +55,7 @@ app.use(fileUpload());
 app.use("/", index);
 app.use("/users", users);
 app.use("/projects", projects);
+app.use("/settings", settings);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
