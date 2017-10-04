@@ -63,7 +63,7 @@ module.exports = function(db) {
         req.flash('registerMessage', 'email already registered');
         return res.redirect('/register')
       } else {
-        db.query(`INSERT INTO users(email, password, projectcolumns) VALUES('${req.body.email}', '${passwordHash.generate(req.body.pass)}', '{}')`, (err, data) => {
+        db.query(`INSERT INTO users(email, password, projectcolumns, issuecolumns) VALUES('${req.body.email}', '${passwordHash.generate(req.body.pass)}', '{}', '{}')`, (err, data) => {
           if(err) {
             console.error(err);
             req.flash('registerMessage', 'something wrong please call administrator');

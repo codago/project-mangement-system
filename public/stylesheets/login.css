@@ -5,8 +5,8 @@
  * General styles
  */
 body, html {
-    background-repeat: repeat-x repeat-y;
-    background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
+    /*background-repeat: repeat-x repeat-y;
+    background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));*/
 }
 
 .card-container.card {

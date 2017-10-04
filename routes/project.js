@@ -190,29 +190,29 @@ module.exports = function(db) {
     JOIN projects ON members.projectid=projects.projectid
     WHERE projects.projectid = ${req.params.id}`
 
-        if(req.query.cid && req.query.id) {
-          filterQuery.push(`projectid = ${req.query.id}`)
-          isFilter = true;
-        }
-        if(req.query.cname && req.query.name) {
-          let queryName = req.query.name.split(' ').filter(function(deleteSpace){return deleteSpace !== ''})
-          let tempQueryArray = [];
-          let tempQuery = '';
-          for(var x = 0; x<queryName.length; x++) {
-            tempQueryArray.push(`users.firstname LIKE '%${queryName[x]}%'`)
-            tempQueryArray.push(`users.lastname LIKE '%${queryName[x]}%'`)
-          }
-          tempQuery = `(${tempQueryArray.join(' OR ')})`
-          filterQuery.push(tempQuery)
-          isFilter = true;
-        }
-        if(req.query.cposition && req.query.position) {
-          filterQuery.push(`users.role = '${req.query.position}'`)
-          isFilter = true;
-        }
-        if(isFilter){
-          sqlQuery += ' AND ' + filterQuery.join(' AND ')
-        }
+    if(req.query.cid && req.query.id) {
+      filterQuery.push(`projectid = ${req.query.id}`)
+      isFilter = true;
+    }
+    if(req.query.cname && req.query.name) {
+      let queryName = req.query.name.split(' ').filter(function(deleteSpace){return deleteSpace !== ''})
+      let tempQueryArray = [];
+      let tempQuery = '';
+      for(var x = 0; x<queryName.length; x++) {
+        tempQueryArray.push(`users.firstname LIKE '%${queryName[x]}%'`)
+        tempQueryArray.push(`users.lastname LIKE '%${queryName[x]}%'`)
+      }
+      tempQuery = `(${tempQueryArray.join(' OR ')})`
+      filterQuery.push(tempQuery)
+      isFilter = true;
+    }
+    if(req.query.cposition && req.query.position) {
+      filterQuery.push(`users.role = '${req.query.position}'`)
+      isFilter = true;
+    }
+    if(isFilter){
+      sqlQuery += ' AND ' + filterQuery.join(' AND ')
+    }
     db.query(sqlQuery, function(err, memberListData) {
       res.render('members/list', {
         title: "Project Members",
@@ -235,7 +235,7 @@ module.exports = function(db) {
   router.post('/details/:id/members/membercolumn', userChecker, function(req, res) {
     let memberColumns = JSON.stringify(req.body)
     req.session.user.membercolumns = memberColumns;
-    let sqlQuery = `UPDATE users SET membercolumns = '${membercolumns}' WHERE userid = ${req.session.user.userid}`;
+    let sqlQuery = `UPDATE users SET membercolumns = '${memberColumns}' WHERE userid = ${req.session.user.userid}`; //memberColumns with $ is declared
     db.query(sqlQuery, function(err) {
       console.log(sqlQuery);
       if(err) {
@@ -262,6 +262,200 @@ module.exports = function(db) {
       res.redirect(`/projects/details/${req.params.id}/members`)
     });
   });
-  return router;
 
-}
+  router.get('/details/:id/issues', userChecker, function(req, res) {
+    let sqlQuery = `SELECT projects.projectid, users.userid, users.firstname || ' ' || users.lastname AS name,
+    projects.name AS projectname FROM members
+    JOIN users ON members.userid=users.userid
+    JOIN projects ON members.projectid=projects.projectid
+    WHERE members.projectid = ${req.params.id};`
+
+    db.query(sqlQuery, function(err, membersListData){
+      if(err){
+        console.log(err);
+      }
+
+      let filterQuery = [];
+      let isFilter = false;
+      sqlQuery = 'SELECT count(*) AS total FROM issues' //pagination
+
+
+      if(req.query.cid && req.query.id) {
+        filterQuery.push(`issuesid = ${req.query.id}`)
+        isFilter = true;
+      }
+      if(req.query.csubject && req.query.subject) {
+        filterQuery.push(`subject LIKE '%${req.query.subject}%'`)
+        isFilter = true;
+      }
+      if(req.query.ctrackers && req.query.trackers) {
+        filterQuery.push(`tracker = '${req.query.tracker}'`)
+        isFilter = true;
+      }
+      if(isFilter){
+        sqlQuery += ' AND ' + filterQuery.join(' AND ')
+      }
+
+      if(req.query.cdescription && req.query.description) {
+        filterQuery.push(`description LIKE '%${req.query.description}%'`)
+        isFilter = true;
+      }
+
+      if(req.query.cstatus && req.query.status) {
+        filterQuery.push(`status = '${req.query.status}'`)
+        isFilter = true;
+      }
+
+      if(req.query.cpriority && req.query.priority) {
+        filterQuery.push(`priority = '${req.query.priority}'`)
+        isFilter = true;
+      }
+
+      if(req.query.casignee && req.query.asignee) {
+        filterQuery.push(`asignee = ${req.query.asignee}`)
+        isFilter = true;
+      }
+
+      if(req.query.cstartdate && req.query.startdate) {
+        filterQuery.push(`startdate = '${req.query.startdate}'`)
+        isFilter = true;
+      }
+
+      if(req.query.cduedate && req.query.duedate) {
+        filterQuery.push(`duedate = '${req.query.duedate}'`)
+        isFilter = true;
+      }
+
+
+      if(req.query.cestimatedtime && req.query.estimatedtime) {
+        filterQuery.push(`estimatedtime = '${req.query.estimatedtime}'`)
+        isFilter = true;
+      }
+
+      if(req.query.cpercentagedone && req.query.percentagedone) {
+        filterQuery.push(`percentagedone = ${req.query.percentagedone}`)
+        isFilter = true;
+      }
+
+      if(isFilter) {
+        sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
+      }
+      console.log('test',req.session.user);
+      db.query(sqlQuery, function(err, issuesData) {
+        res.render('issues/list', {
+          title: "Project Issues",
+          page: "project",
+          idURL: req.params.id,
+          query: req.query,
+          membersListData: membersListData.rows,
+          issuesData: issuesData.rows,
+          issuecolumns: JSON.parse(req.session.user.issuecolumns)
+        });
+      });
+    });
+  });
+
+  router.get('/details/:id/issues/delete/:issuesid', userChecker, function(req, res) {
+    db.query(`DELETE FROM issues WHERE id = '${req.params.issuesid}'`, function(err){
+      res.redirect(`/projects/details/'${req.params.id}'/issues/list`);
+    })
+  });
+
+
+  router.get('/details/:id/issues/add', userChecker, function(req, res) {
+    db.query(`SELECT projects.projectid, users.userid, users.firstname || ' ' || users.lastname AS membername,
+    projects.name AS projectname FROM members JOIN users ON members.userid=users.userid
+    JOIN projects ON members.projectid=projects.projectid
+    WHERE members.projectid = ${req.params.id};`, function(err, membersListData) {
+      if(err) {
+        console.error(err);
+      }
+      console.log("test",membersListData.rows);
+      res.render('issues/add', {
+        title: "Project Issues",
+        page: "project",
+        query: req.query,
+        idURL: req.params.id,
+        membersListData: membersListData.rows});
+      });
+    });
+
+    router.post('/details/:id/issues/add', userChecker, function(req, res) {
+      let projectid = req.params.projectid;
+      let tracker = req.body.tracker;
+      let subject = req.body.subject;
+      let description = req.body.description;
+      let status = req.body.status;
+      let priority = req.body.priority;
+      let asignee = req.body.asignee;
+      let startDate = req.body.startdate;
+      let dueDate = req.body.duedate;
+      let estimatedTime = req.body.estimatedtime;
+      let percentageDone = req.body.percentagedone;
+      let files = req.body.files;
+      db.query(`INSERT INTO issues(projectid, tracker, subject, description, status, priority, asignee, startDate, dueDate, estimatedTime, percentageDone, files)
+       VALUES('${projectid}','${tracker}','${subject}', '${description}', '${status}', '${priority}', '${asignee}', '${startDate}', '${dueDate}', '${estimatedTime}', '${percentageDone}', '${files}'`, function(err) {
+        if(err) {
+          console.error(err);
+        }
+        res.redirect(`/projects/details/${req.params.id}/issues`)
+      });
+    });
+
+    router.get('/details/:id/issues/edit/:issueid', userChecker, function(req, res) {
+      let sqlQuery = `SELECT * FROM issues WHERE issueid = ${req.params.issueid}`
+      db.query(sqlQuery, function(err, selectedIssueData) {
+        if(err) {
+          console.error(err);
+        }
+        sqlQuery = `SELECT projects.projectid, users.userid, users.firstname || ' ' || users.lastname AS membername,
+        projects.name AS projectname FROM members JOIN users ON members.userid=users.userid
+        JOIN projects ON members.projectid=projects.projectid
+        WHERE members.projectid = ${req.params.id};`
+
+        db.query(sqlQuery, function(err, membersListData) {
+          if(err) {
+            console.error(err);
+          }
+          res.render('issues/edit', {
+            title: "Project Issues",
+            page: "project",
+            query: req.query,
+            idURL: req.params.id,
+            issueidURL: req.params.issueid,
+            selectedIssueData: selectedIssueData.rows[0],
+            membersListData: membersListData.rows
+          });
+        });
+      });
+    });
+
+    router.post('/details/:id/issues/edit/:issueid', userChecker, function(req, res) {
+      let issueid = req.params.issueid;
+      let tracker = req.body.tracker;
+      let subject = req.body.subject;
+      let description = req.body.description;
+      let status = req.body.status;
+      let priority = req.body.priority;
+      let asignee = req.body.asignee;
+      let startDate = req.body.startdate;
+      let dueDate = req.body.duedate;
+      let estimatedTime = req.body.estimatedtime;
+      let percentageDone = req.body.percentagedone;
+
+      let sqlQuery = `UPDATE issues SET tracker = '${tracker}', subject = '${subject}', description = '${description}',
+      status = '${status}', priority = '${priority}', asignee = ${asignee}, startdate = '${startDate}',
+      duedate = '${dueDate}', estimatedtime = ${estimatedTime} WHERE issueid = ${issueid}`
+
+      db.query(sqlQuery, function(err) {
+        if(err) {
+          console.error(err);
+        }
+        res.redirect(`/projects/details/${req.params.id}/issues/list`);
+      });
+    });
+
+
+    return router;
+
+  }
