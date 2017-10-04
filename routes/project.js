@@ -250,7 +250,7 @@ module.exports = function(db) {
       if(err) {
         console.error(err);
       }
-      res.render('members/add', {title: 'Add projects', page: "project", users: userData.rows});
+      res.render('members/add', {title: 'Add projects', page: "project", users: userData.rows, idURL: req.params.id});
     });
   });
 
