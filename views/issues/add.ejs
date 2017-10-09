@@ -28,7 +28,7 @@
   </div>
   <div class="panel panel-default">
     <div class="panel-body">
-        <form method="POST">
+        <form method="POST" action="">
           <input type="hidden" name="projectid" value="<%=idURL%>">
           <input type="hidden" name="files" value="{}">
           <div class="form-group row">
@@ -146,7 +146,7 @@
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Asignee</label>
                 <div class="col-sm-10">
-                  <select class="form-control" name="asignee" >
+                  <select class="form-control" name="assignee" >
                     <% for(let x = 0; x < membersListData.length; x++) { %>
                       <option value="<%=membersListData[x].userid%>"><%= membersListData[x].membername %></option>
                     <% } %>
@@ -174,13 +174,13 @@
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">% Done</label>
                 <div class="col-sm-10">
-                  <input class="form-control" type="number" name="percentagedone" value="" min="0" max="100" required>
+                  <input class="form-control" type="number" name="done" value="" min="0" max="100" required>
                 </div>
               </div>
             <div class="form-group row">
               <div class="col-sm-10">
                 <button type="submit" class="btn btn-primary">Save</button>
-                <a href="/projects/details/<%=idURL%>/issues/new" class="btn btn-primary">Reset</a>
+                <a href="/projects/details/<%=idURL%>/issues/add" class="btn btn-primary">Reset</a>
               </div>
             </div>
           </form>
