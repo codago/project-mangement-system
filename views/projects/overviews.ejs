@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title><%= title %> | Project Management System q</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' />
+  </head>
+  <body>
+    <% include ../partials/menu %>
+
+    <div class="container" style="float: left; width:20%">
+      <ul class="nav nav-sidebar">
+      <li class="activesidebar"><a href="/projects/overviews/<%= idURL %>/overview">Overview <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">Activity</a></li>
+        <li>&nbsp</li>
+      </ul>
+      <ul class="nav nav-sidebar">
+        <li><a href="/projects/overviews/<%= idURL %>/members">Members</a></li>
+        <li><a href="/projects/overviews/<%= idURL %>/issues">Issues</a></li>
+      </ul>
+    </div>
+
+<div class="container" style="float: right; width: 80%">
+  <div class="page-header">
+    <h1>Overview</h1>
+  </div>
+  <h2><%= projectData[0].projectname %> </h2>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><b>Issue Tracking</b></h3>
+    </div>
+    <div class="panel-body">
+      <div class="container">
+        <ul>
+          <li>Bug: 0 Open /0</li>
+          <li>Feature: 2 Open /6</li>
+          <li>Support: 1 Open /1</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><b>Members</b></h3>
+    </div>
+    <div class="panel-body">
+      <div class="container">
+        <ul>
+          <% for(var x = 0; x < projectData.length; x++) { %>
+            <li><%= projectData[x].membername %></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <% include ../partials/footer %>
