@@ -275,14 +275,16 @@ module.exports = function(db) {
         console.log(err);
       }
 
-      sqlQuery = `SELECT * FROM issues`
+
       let filterQuery = [];
       let isFilter = false;
-      // sqlQuery = 'SELECT count(*) AS total FROM issues' //pagination
+      sqlQuery = 'SELECT count(*) AS total FROM issues' //pagination
 
+      console.log("trackers ===", req.query.trackers);
+      console.log("issuesid ===", req.query.issuesid);
 
-      if(req.query.cid && req.query.id) {
-        filterQuery.push(`issuesid = ${req.query.id}`)
+      if(req.query.cissuesid && req.query.issuesid) {
+        filterQuery.push(`issuesid = ${req.query.issuesid}`)
         isFilter = true;
       }
       if(req.query.csubject && req.query.subject) {
@@ -292,9 +294,6 @@ module.exports = function(db) {
       if(req.query.ctrackers && req.query.trackers) {
         filterQuery.push(`tracker = '${req.query.trackers}'`)
         isFilter = true;
-      }
-      if(isFilter){
-        sqlQuery += ' AND ' + filterQuery.join(' AND ')
       }
 
       if(req.query.cdescription && req.query.description) {
@@ -312,8 +311,8 @@ module.exports = function(db) {
         isFilter = true;
       }
 
-      if(req.query.casignee && req.query.asignee) {
-        filterQuery.push(`asignee = ${req.query.asignee}`)
+      if(req.query.cassignee && req.query.assignee) {
+        filterQuery.push(`asignee = ${req.query.assignee}`)
         isFilter = true;
       }
 
@@ -333,15 +332,33 @@ module.exports = function(db) {
         isFilter = true;
       }
 
-      if(req.query.cdone && req.query.percentagedone) {
-        filterQuery.push(`percentagedone = ${req.query.percentagedone}`)
+      if(req.query.cdone && req.query.done) {
+        filterQuery.push(`percentagedone = ${req.query.done}`)
         isFilter = true;
       }
 
+      db.query(sqlQuery, function(err, countData){
+        let url = (req.url === "/") ? "/?page=1" : req.url;
+        let total = countData.rows[0].total;
+        let page = Number(req.query.page) || 1
+        let limit = 3
+        let offset = (page-1) * 3
+        let pages = (total == 0) ? 1 : Math.ceil(total/limit);
+        let pagination = {url: url, total: total, page: page, limit: limit, offset: offset, pages: pages}
+
+      sqlQuery = `SELECT * FROM issues`
+
       if(isFilter) {
+        filterQuery.push(`projectid = ${req.params.id}`)
         sqlQuery += ` WHERE ${filterQuery.join(" AND ")}`
+      }else {
+        sqlQuery += ` WHERE projectid = ${req.params.id}`;
       }
+      console.log(filterQuery);
       console.log('test',sqlQuery);
+
+      sqlQuery += `ORDER BY issuesid ASC LIMIT ${limit} OFFSET ${offset}`
+
       db.query(sqlQuery, function(err, issuesData) {
         res.render('issues/list', {
           title: "Project Issues",
@@ -350,14 +367,17 @@ module.exports = function(db) {
           query: req.query,
           membersListData: membersListData.rows,
           issuesData: issuesData.rows,
-          issuecolumns: JSON.parse(req.session.user.issuecolumns)
+          issuecolumns: JSON.parse(req.session.user.issuecolumns),
+          pagination: pagination,
         });
       });
     });
   });
+});
 
   router.post('/details/:id/issues', userChecker, function(req, res) {
     let issueColumns = JSON.stringify(req.body)
+    console.log('ini req.body', req.body);
     req.session.user.issuecolumns = issueColumns;
     let sqlQuery = `UPDATE users SET issuecolumns = '${issueColumns}' WHERE userid = ${req.session.user.userid}`; //memberColumns with $ is declared
     db.query(sqlQuery, function(err) {
@@ -412,10 +432,10 @@ module.exports = function(db) {
       let percentageDone = req.body.done;
       let files = req.body.files;
       let query = `INSERT INTO issues(projectid, tracker, subject, description, status, priority, assignee, startdate, duedate, estimatedtime, done, files)
-       VALUES('${projectid}','${tracker}','${subject}', '${description}', '${status}', '${priority}', '${asignee}', '${startDate}', '${dueDate}', '${estimatedTime}', '${percentageDone}', '${files}')`
+       VALUES(${projectid},'${tracker}','${subject}', '${description}', '${status}', '${priority}', '${asignee}', '${startDate}', '${dueDate}', '${estimatedTime}', '${percentageDone}', '${files}')`
          console.log(query);
       db.query(`INSERT INTO issues(projectid, tracker, subject, description, status, priority, assignee, startdate, duedate, estimatedtime, done, files)
-       VALUES('${projectid}','${tracker}','${subject}', '${description}', '${status}', '${priority}', '${asignee}', '${startDate}', '${dueDate}', '${estimatedTime}', '${percentageDone}', '${files}')`, function(err) {
+       VALUES(${projectid},'${tracker}','${subject}', '${description}', '${status}', '${priority}', '${asignee}', '${startDate}', '${dueDate}', '${estimatedTime}', '${percentageDone}', '${files}')`, function(err) {
         if(err) {
           console.error(err);
         }
@@ -424,7 +444,8 @@ module.exports = function(db) {
     });
 
     router.get('/details/:id/issues/edit/:issueid', userChecker, function(req, res) {
-      let sqlQuery = `SELECT * FROM issues WHERE issueid = ${req.params.issueid}`
+      let sqlQuery = `SELECT * FROM issues WHERE issuesid = ${req.params.issueid}`
+      console.log(sqlQuery);
       db.query(sqlQuery, function(err, selectedIssueData) {
         if(err) {
           console.error(err);
@@ -438,12 +459,13 @@ module.exports = function(db) {
           if(err) {
             console.error(err);
           }
+            console.log("toni", selectedIssueData);
           res.render('issues/edit', {
             title: "Project Issues",
             page: "project",
             query: req.query,
             idURL: req.params.id,
-            issueidURL: req.params.issueid,
+            issueidURL: req.params.issuesid,
             selectedIssueData: selectedIssueData.rows[0],
             membersListData: membersListData.rows
           });
@@ -452,7 +474,7 @@ module.exports = function(db) {
     });
 
     router.post('/details/:id/issues/edit/:issueid', userChecker, function(req, res) {
-      let issueid = req.params.issueid;
+      let issuesid = req.params.issueid;
       let tracker = req.body.tracker;
       let subject = req.body.subject;
       let description = req.body.description;
@@ -462,17 +484,22 @@ module.exports = function(db) {
       let startDate = req.body.startdate;
       let dueDate = req.body.duedate;
       let estimatedTime = req.body.estimatedtime;
-      let percentageDone = req.body.percentagedone;
+      let percentageDone = req.body.done;
+      let files = req.body.files;
+      let spenttime = req.body.spenttime;
+      let targetversion = req.body.targetversion;
+      let author = req.body.author;
+
 
       let sqlQuery = `UPDATE issues SET tracker = '${tracker}', subject = '${subject}', description = '${description}',
-      status = '${status}', priority = '${priority}', asignee = ${asignee}, startdate = '${startDate}',
-      duedate = '${dueDate}', estimatedtime = ${estimatedTime} WHERE issueid = ${issueid}`
-
+      status = '${status}', priority = '${priority}', assignee = ${asignee}, startdate = '${startDate}',
+      duedate = '${dueDate}', estimatedtime = ${estimatedTime}, done = ${percentageDone} WHERE issuesid = ${issuesid}`
+      console.log(sqlQuery);
       db.query(sqlQuery, function(err) {
         if(err) {
           console.error(err);
         }
-        res.redirect(`/projects/details/${req.params.id}/issues/list`);
+        res.redirect(`/projects/details/${req.params.id}/issues`);
       });
     });
 
