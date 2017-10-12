@@ -113,12 +113,12 @@
                       edit
                     </button>
                   </a>
-                  <a href='/projects/delete/<%= listData[i].projectid %>'>
+                   <% if(userSession.privilege !== "User") {%> <a href='/projects/delete/<%= listData[i].projectid %>'>
                     <button class="btn btn-danger" type="button" name="button"
                     onclick="return confirm('Are you sure you want to delete this item?')">
                     delete
                   </button>
-                </a>
+                </a><%}%>
               </td>
             </tr>
             <% } %>

@@ -178,8 +178,8 @@
                 <div class="col-sm-10">
                   <% let filesObject = JSON.parse(selectedIssueData.files)%>
                   <% for(let prop in filesObject) {%>
-                  <a href="../../../../../assets/<%=filesObject[prop]%>">
-                    <img src="../../../../../assets/<%=filesObject[prop]%>" height="42" width="42">
+                  <a href="/assets/<%=filesObject[prop]%>">
+                    <img src="/assets/<%=filesObject[prop]%>" height="42" width="42">
                   </a>
                   <a href="/projects/details/<%=idURL%>/issues/edit/<%=issueidURL%>/deleteimage/<%=filesObject[prop]%>"
                   onclick="return confirm('Your current edit configuration will be lost and this will delete the image file, are you sure you want to do this?')">

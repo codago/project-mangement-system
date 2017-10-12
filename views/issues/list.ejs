@@ -13,7 +13,7 @@
   <div class="container" style="float: left; width: 20%">
     <ul class="nav nav-sidebar">
       <li><a href="/projects/details/<%= idURL %>/overview">Overview <span class="sr-only">(current)</span></a></li>
-      <li><a href="/projects/details/<%= idURL %>/activities">Activity</a></li>
+      <li><a href="/projects/details/<%= idURL %>/activity">Activity</a></li>
       <li>&nbsp</li>
     </ul>
     <ul class="nav nav-sidebar">
@@ -312,13 +312,17 @@
                                 table-layout: fixed;
                                 border-collapse: collapse;">
                                 edit </a>
-                                <a href='/projects/details/<%= idURL %>/issues/delete/<%= issuesData[i].issuesid %>'
-                                  class="btn btn-danger" type="button" name="button" style="width: 100%;
-                                  table-layout: fixed;
-                                  border-collapse: collapse;"
-                                  onclick="return confirm('Are you sure you want to delete this item?')">
-                                  delete
-                                </a>
+                              <a href='/projects/details/<%= idURL %>/issues/delete/<%= issuesData[i].issuesid %>'
+                                class="btn btn-danger" type="button" name="button" style="width: 100%;
+                                table-layout: fixed;
+                                border-collapse: collapse;"
+                                onclick="return confirm('Are you sure you want to delete this item?')">
+                                delete </a>
+                              <a href="/projects/details/<%=idURL%>/issues/upload/<%= issuesData[i].issuesid %>" class="btn btn-warning" type="button" name="button"
+                                style="width: 100%;
+                                table-layout: fixed;
+                                border-collapse: collapse;">
+                                Upload</a>
                                 <%}%>
                               </td>
                             </tr>
@@ -328,10 +332,20 @@
                               <% } %>
                             </tbody>
                           </table>
-                          <a href='/projects/details/<%= idURL %>/issues/add' class="btn btn-primary">Add</a>
+                          <br><br>
+                          <ul class="pagination">
+                            <% console.log("url list.ejs on issues: ", pagination.url) %>
+                            <% if(pagination.page > 1){ %><li><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${pagination.page - 1}`) %>">Previous</a></li> <% } %>
+                            <% for(var i = 1; i <= pagination.pages; i++){ %>
+                              <li class="<%= (pagination.page == i) ? 'active' : ''%>"><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${i}`) %>"><%= i %></a></li>
+                              <% } %>
+                              <% if(pagination.pages > pagination.page){ %><li><a href="/projects<%= pagination.url.replace(`/?page=${pagination.page}`, `/?page=${pagination.page + 1}`) %>">Next</a></li> <% } %>
+                            </ul>
+                            <p><%= `Showing ${pagination.offset + 1} to ${(pagination.offset + pagination.limit > pagination.total) ? pagination.total : pagination.offset + pagination.limit} of ${pagination.total} ${(pagination.total > 1) ? 'entries' : 'entry'}` %></p>
+                            <br>
+                            <a href='/projects/details/<%= idURL %>/issues/add' class="btn btn-primary">Add</a>
                         </div>
                       </div>
                     </div>
-                  </div>
 
                   <% include ../partials/footer %>
