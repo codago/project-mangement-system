@@ -1,0 +1,144 @@
+<% include ../partials/header %>
+<% include ../partials/menu %>
+
+<div class="container">
+  <h1>Projects</h1>
+  <h3>Filters</h3>
+  <form class="form-horizontal" method="get" action="/project">
+
+    <div class="form-group row">
+      <label class="col-sm-2">
+        <input class="col-sm-2" type="checkbox" name="cid" <%= query.cid ? " checked" : '' %>>ID
+      </label>
+      <div class="col-sm-5">
+        <input id="id" class="form-control" type="number" name="id" placeholder="ID" value="<%= query.id %>">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2">
+        <input class="col-sm-2" type="checkbox" name="cname" <%= query.cname ? " checked" : '' %>>Name
+      </label>
+      <div class="col-sm-5">
+        <input id="name" class="form-control" type="text" name="name" placeholder="Name" value="<%= query.name %>">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">
+        <input type="checkbox" class="col-sm-2"name="cmember" <%= query.cmember ? " checked" : '' %>>Member
+      </label>
+      <div class="col-sm-5">
+        <select class="form-control" name="member" id="member" value="<%= query.member %>">
+          <option selected disabled>Choose the member ...</option>
+          <% for(let i=0; i<users.length; i++){ %><option value = "<%= users[i].userid %>"><%= `${users[i].firstname} ${users[i].lastname}` %></option><% } %>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-success" type="submit">Search</button>
+    <a href="/project"class="btn btn-danger">Reset</a>
+  </form>
+
+  <hr>
+  <h1>Options</h1>
+  <h4>Columns</h4>
+  <form class="form-horizontal" action="/project"method="post">
+    <div class="form-group row">
+      <label class="col-sm-1">ID</label>
+      <input class="col-sm-2" type="checkbox" name="coid" <%= projectcolumns.coid ? "checked":''%>>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-1">Name</label>
+      <input class="col-sm-2" type="checkbox" name="coname" <%= projectcolumns.coname ? "checked":'' %>>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-1">Members</label>
+      <input class="col-sm-2" type="checkbox" name="comembers" <%= projectcolumns.comembers ? " checked" : '' %>>
+    </div>
+    <button class="btn btn-success" type="submit">Apply</button>
+  </form>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <% let countrow = 1 %>
+        <% if(projectcolumns.coid){ %><th>#</th><% countrow++} %>
+        <% if(projectcolumns.coname){ %><th>Name</th><% countrow++} %>
+        <% if(projectcolumns.comembers){ %><th>Members</th><% countrow++} %>
+        <%if(userData.privilege == "Admin"){%><th>Actions</th><%}%>
+      </tr>
+    </thead>
+    <tbody>
+      <% if(listlimit.length > 0){%>
+        <%for(let i=0;i<listlimit.length;i++){%>
+          <tr>
+            <% if(projectcolumns.coid){ %><td><a href="/project/<%=listlimit[i].projectid%>/overview"><%= listlimit[i].projectid%></a></td><% } %>
+            <% if(projectcolumns.coname){ %><td><%= listlimit[i].name%></td> <% } %>
+            <% if(projectcolumns.comembers){ %><td><%= listlimit[i].members.map( x => x.name ).join(', ') %></td><%}%>
+            <td>
+              <%if(userData.privilege == "Admin"){%>
+                <a href="/updateproject/<%= listlimit[i].projectid%>" class="btn btn-success"><i class="fa fa-wrench" aria-hidden="true">&nbsp</i>Edit</a>
+                <a href="/projectdelete/<%=listlimit[i].projectid%>" class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true">&nbsp</i>Delete</a>
+                <%}%>
+              </td>
+            </tr>
+            <%}%>
+            <%}else{%>
+              <tr>
+                <td colspan="<%= countrow %>">data kosong</td>
+              </tr>
+              <%}%>
+            </tbody>
+          </table>
+
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+
+
+              <%if(prev >= 0){%>
+                <%if(queryLength >= 0 && queryLength <= 1){%>
+                  <li class="page-item"><a class="page-link" href="/project?pages=<%=prev%>">Previous</a></li>
+                  <%}else{%>
+                    <li class="page-item"><a class="page-link" href="<%=url%>&pages=<%=prev%>">Previous</a></li>
+                    <%}%>
+                    <%}else{%>
+                      <li class="page-item"><a class="page-link" href="" style="pointer-events: none;" hidden>Previous</a></li>
+                      <%}%>
+
+                      <% var count = 0; %>
+                      <% for(var i=0;i<listall;i+=5){ %>
+                        <% count++ %>
+                        <li class="<%=((i-5) == prev) ?'page-item active':''%>">
+                          <%if(queryLength >= 0 && queryLength <= 1){%>
+                            <a class="page-link" href="/project?pages=<%=i%>">
+                              <%} else{%>
+                                <a class="page-link" href="<%=url%>&pages=<%=i%>">
+                                  <%}%>
+
+                                  <%= count %>
+                                </a>
+                              </li>
+                              <% } %>
+
+                              <% var maxLimit = Math.ceil(listall/5)*5; %>
+                              <%if(next < maxLimit){%>
+                                <%if(queryLength >= 0 && queryLength <= 1){%>
+                                  <li class="page-item"><a class="page-link" href="/project?pages=<%=next%>">Next</a></li>
+                                  <%}else{%>
+                                    <li class="page-item"><a class="page-link" href="<%=url%>&pages=<%=next%>">Next</a></li>
+                                    <%}%>
+                                    <%}else{%>
+                                      <li class="page-item"><a class="page-link" href="/project?pages=<%=next%>" style="pointer-events:none;" hidden>Next</a></li>
+                                      <%}%>
+                                    </ul>
+                                  </nav>
+                                  <%if(userData.privilege == "Admin"){%>
+                                    <a class="btn btn-success" href="/projectadd"><i class="fa fa-pencil-square-o" aria-hidden="true">&nbsp</i>Add</a>
+                                  <%}%>
+                                </div>
+
+
+                                <% include ../partials/footer %>

@@ -8,12 +8,16 @@ module.exports = {
         console.log("table created");
     })
   },
-  add:function(){
-    db.query(`INSERT INTO activity (time,title,description,author) VALUES ('${time}', '${title}','${description}','${author}');`,(err,res)=>{
+  add:function(time,title,description,author,createdate,userid,projectid,cb){
+    db.query(`INSERT INTO activity (time,title,description,author,createdate,userid,projectid) VALUES ('${time}', '${title}','${description}','${author}','${createdate}','${userid}','${projectid}');`,(err)=>{
       if(err)console.log(err);
-      console.log("data inserted");
+      cb(err)
+    })
+  },
+  listActivity:function(userid,projectid,cb){
+    db.query(`SELECT *,current_date - interval '7 days' as datebefore,current_date as datenow, to_char(createdate,'day') as daynow FROM activity where userid = '${userid}' and projectid = '${projectid}' and createdate between current_date - interval '7 days' and current_date;`,function(err,res){
+      if(err)console.log(err);
+      cb(res.rows)
     })
   }
 }
-// activity.createTable()
-// activity.add(new Date(new Date().getTime()).toLocaleTimeString(),"e-ktp","perancangan e-ktp","toni")

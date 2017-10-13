@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<!-- saved from url=(0030)http://lms.codago.co/challenge -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="theme-color" content="#000000">
+  <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+  <link rel="manifest" href="http://lms.codago.co/manifest.json">
+  <link rel="shortcut icon" href="http://lms.codago.co/logo.png">
+
+
+  <link href="./sqliteBread_files/bootstrap.min.css" rel="stylesheet">
+
+  <!-- MetisMenu CSS -->
+  <link href="./sqliteBread_files/metisMenu.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link href="./sqliteBread_files/sb-admin-2.css" rel="stylesheet">
+
+  <!-- Morris Charts CSS -->
+  <link href="./sqliteBread_files/morris.css" rel="stylesheet">
+
+  <!-- Custom Fonts -->
+  <link href="./sqliteBread_files/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!--
+      Notice the use of  in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+  <title>LMS Codago</title>
+<style type="text/css">body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+</style><style type="text/css">/*!
+ * Cropper.js v0.8.1
+ * https://github.com/fengyuanchen/cropperjs
+ *
+ * Copyright (c) 2015-2016 Fengyuan Chen
+ * Released under the MIT license
+ *
+ * Date: 2016-09-03T04:55:16.458Z
+ */
+
+.cropper-container {
+  font-size: 0;
+  line-height: 0;
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  direction: ltr;
+}
+.cropper-container img {
+  display: block;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  width: 100%;
+  height: 100%;
+  image-orientation: 0deg;
+}
+.cropper-wrap-box,
+.cropper-canvas,
+.cropper-drag-box,
+.cropper-crop-box,
+.cropper-modal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.cropper-wrap-box {
+  overflow: hidden;
+}
+.cropper-drag-box {
+  opacity: 0;
+  background-color: #fff;
+}
+.cropper-modal {
+  opacity: .5;
+  background-color: #000;
+}
+.cropper-view-box {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  outline: 1px solid #39f;
+  outline-color: rgba(51, 153, 255, 0.75);
+}
+.cropper-dashed {
+  position: absolute;
+  display: block;
+  opacity: .5;
+  border: 0 dashed #eee;
+}
+.cropper-dashed.dashed-h {
+  top: 33.33333333%;
+  left: 0;
+  width: 100%;
+  height: 33.33333333%;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+}
+.cropper-dashed.dashed-v {
+  top: 0;
+  left: 33.33333333%;
+  width: 33.33333333%;
+  height: 100%;
+  border-right-width: 1px;
+  border-left-width: 1px;
+}
+.cropper-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 0;
+  height: 0;
+  opacity: .75;
+}
+.cropper-center:before,
+.cropper-center:after {
+  position: absolute;
+  display: block;
+  content: ' ';
+  background-color: #eee;
+}
+.cropper-center:before {
+  top: 0;
+  left: -3px;
+  width: 7px;
+  height: 1px;
+}
+.cropper-center:after {
+  top: -3px;
+  left: 0;
+  width: 1px;
+  height: 7px;
+}
+.cropper-face,
+.cropper-line,
+.cropper-point {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: .1;
+}
+.cropper-face {
+  top: 0;
+  left: 0;
+  background-color: #fff;
+}
+.cropper-line {
+  background-color: #39f;
+}
+.cropper-line.line-e {
+  top: 0;
+  right: -3px;
+  width: 5px;
+  cursor: e-resize;
+}
+.cropper-line.line-n {
+  top: -3px;
+  left: 0;
+  height: 5px;
+  cursor: n-resize;
+}
+.cropper-line.line-w {
+  top: 0;
+  left: -3px;
+  width: 5px;
+  cursor: w-resize;
+}
+.cropper-line.line-s {
+  bottom: -3px;
+  left: 0;
+  height: 5px;
+  cursor: s-resize;
+}
+.cropper-point {
+  width: 5px;
+  height: 5px;
+  opacity: .75;
+  background-color: #39f;
+}
+.cropper-point.point-e {
+  top: 50%;
+  right: -3px;
+  margin-top: -3px;
+  cursor: e-resize;
+}
+.cropper-point.point-n {
+  top: -3px;
+  left: 50%;
+  margin-left: -3px;
+  cursor: n-resize;
+}
+.cropper-point.point-w {
+  top: 50%;
+  left: -3px;
+  margin-top: -3px;
+  cursor: w-resize;
+}
+.cropper-point.point-s {
+  bottom: -3px;
+  left: 50%;
+  margin-left: -3px;
+  cursor: s-resize;
+}
+.cropper-point.point-ne {
+  top: -3px;
+  right: -3px;
+  cursor: ne-resize;
+}
+.cropper-point.point-nw {
+  top: -3px;
+  left: -3px;
+  cursor: nw-resize;
+}
+.cropper-point.point-sw {
+  bottom: -3px;
+  left: -3px;
+  cursor: sw-resize;
+}
+.cropper-point.point-se {
+  right: -3px;
+  bottom: -3px;
+  width: 20px;
+  height: 20px;
+  cursor: se-resize;
+  opacity: 1;
+}
+.cropper-point.point-se:before {
+  position: absolute;
+  right: -50%;
+  bottom: -50%;
+  display: block;
+  width: 200%;
+  height: 200%;
+  content: ' ';
+  opacity: 0;
+  background-color: #39f;
+}
+@media (min-width: 768px) {
+  .cropper-point.point-se {
+    width: 15px;
+    height: 15px;
+  }
+}
+@media (min-width: 992px) {
+  .cropper-point.point-se {
+    width: 10px;
+    height: 10px;
+  }
+}
+@media (min-width: 1200px) {
+  .cropper-point.point-se {
+    width: 5px;
+    height: 5px;
+    opacity: .75;
+  }
+}
+.cropper-invisible {
+  opacity: 0;
+}
+.cropper-bg {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA3NCSVQICAjb4U/gAAAABlBMVEXMzMz////TjRV2AAAACXBIWXMAAArrAAAK6wGCiw1aAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABFJREFUCJlj+M/AgBVhF/0PAH6/D/HkDxOGAAAAAElFTkSuQmCC");
+}
+.cropper-hide {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+}
+.cropper-hidden {
+  display: none !important;
+}
+.cropper-move {
+  cursor: move;
+}
+.cropper-crop {
+  cursor: crosshair;
+}
+.cropper-disabled .cropper-drag-box,
+.cropper-disabled .cropper-face,
+.cropper-disabled .cropper-line,
+.cropper-disabled .cropper-point {
+  cursor: not-allowed;
+}
+</style><style type="text/css">/*-- Chart --*/
+.c3 svg {
+  font: 10px sans-serif;
+  -webkit-tap-highlight-color: transparent; }
+
+.c3 path, .c3 line {
+  fill: none;
+  stroke: #000; }
+
+.c3 text {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+      user-select: none; }
+
+.c3-legend-item-tile,
+.c3-xgrid-focus,
+.c3-ygrid,
+.c3-event-rect,
+.c3-bars path {
+  shape-rendering: crispEdges; }
+
+.c3-chart-arc path {
+  stroke: #fff; }
+
+.c3-chart-arc text {
+  fill: #fff;
+  font-size: 13px; }
+
+/*-- Axis --*/
+/*-- Grid --*/
+.c3-grid line {
+  stroke: #aaa; }
+
+.c3-grid text {
+  fill: #aaa; }
+
+.c3-xgrid, .c3-ygrid {
+  stroke-dasharray: 3 3; }
+
+/*-- Text on Chart --*/
+.c3-text.c3-empty {
+  fill: #808080;
+  font-size: 2em; }
+
+/*-- Line --*/
+.c3-line {
+  stroke-width: 1px; }
+
+/*-- Point --*/
+.c3-circle._expanded_ {
+  stroke-width: 1px;
+  stroke: white; }
+
+.c3-selected-circle {
+  fill: white;
+  stroke-width: 2px; }
+
+/*-- Bar --*/
+.c3-bar {
+  stroke-width: 0; }
+
+.c3-bar._expanded_ {
+  fill-opacity: 1;
+  fill-opacity: 0.75; }
+
+/*-- Focus --*/
+.c3-target.c3-focused {
+  opacity: 1; }
+
+.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {
+  stroke-width: 2px; }
+
+.c3-target.c3-defocused {
+  opacity: 0.3 !important; }
+
+/*-- Region --*/
+.c3-region {
+  fill: steelblue;
+  fill-opacity: .1; }
+
+/*-- Brush --*/
+.c3-brush .extent {
+  fill-opacity: .1; }
+
+/*-- Select - Drag --*/
+/*-- Legend --*/
+.c3-legend-item {
+  font-size: 12px; }
+
+.c3-legend-item-hidden {
+  opacity: 0.15; }
+
+.c3-legend-background {
+  opacity: 0.75;
+  fill: white;
+  stroke: lightgray;
+  stroke-width: 1; }
+
+/*-- Title --*/
+.c3-title {
+  font: 14px sans-serif; }
+
+/*-- Tooltip --*/
+.c3-tooltip-container {
+  z-index: 10; }
+
+.c3-tooltip {
+  border-collapse: collapse;
+  border-spacing: 0;
+  background-color: #fff;
+  empty-cells: show;
+  -webkit-box-shadow: 7px 7px 12px -9px #777777;
+  box-shadow: 7px 7px 12px -9px #777777;
+  opacity: 0.9; }
+
+.c3-tooltip tr {
+  border: 1px solid #CCC; }
+
+.c3-tooltip th {
+  background-color: #aaa;
+  font-size: 14px;
+  padding: 2px 5px;
+  text-align: left;
+  color: #FFF; }
+
+.c3-tooltip td {
+  font-size: 13px;
+  padding: 3px 6px;
+  background-color: #fff;
+  border-left: 1px dotted #999; }
+
+.c3-tooltip td > span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px; }
+
+.c3-tooltip td.value {
+  text-align: right; }
+
+/*-- Area --*/
+.c3-area {
+  stroke-width: 0;
+  opacity: 0.2; }
+
+/*-- Arc --*/
+.c3-chart-arcs-title {
+  dominant-baseline: middle;
+  font-size: 1.3em; }
+
+.c3-chart-arcs .c3-chart-arcs-background {
+  fill: #e0e0e0;
+  stroke: none; }
+
+.c3-chart-arcs .c3-chart-arcs-gauge-unit {
+  fill: #000;
+  font-size: 16px; }
+
+.c3-chart-arcs .c3-chart-arcs-gauge-max {
+  fill: #777; }
+
+.c3-chart-arcs .c3-chart-arcs-gauge-min {
+  fill: #777; }
+
+.c3-chart-arc .c3-gauge-value {
+  fill: #000;
+  /*  font-size: 28px !important;*/ }
+
+.c3-chart-arc.c3-target g path {
+  opacity: 1; }
+
+.c3-chart-arc.c3-target.c3-focused g path {
+  opacity: 1; }
+</style><style type="text/css">body { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABZ0RVh0Q3JlYXRpb24gVGltZQAxMC8yOS8xMiKqq3kAAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzVxteM2AAABHklEQVRIib2Vyw6EIAxFW5idr///Qx9sfG3pLEyJ3tAwi5EmBqRo7vHawiEEERHS6x7MTMxMVv6+z3tPMUYSkfTM/R0fEaG2bbMv+Gc4nZzn+dN4HAcREa3r+hi3bcuu68jLskhVIlW073tWaYlQ9+F9IpqmSfq+fwskhdO/AwmUTJXrOuaRQNeRkOd5lq7rXmS5InmERKoER/QMvUAPlZDHcZRhGN4CSeGY+aHMqgcks5RrHv/eeh455x5KrMq2yHQdibDO6ncG/KZWL7M8xDyS1/MIO0NJqdULLS81X6/X6aR0nqBSJcPeZnlZrzN477NKURn2Nus8sjzmEII0TfMiyxUuxphVWjpJkbx0btUnshRihVv70Bv8ItXq6Asoi/ZiCbU6YgAAAABJRU5ErkJggg==);}
+.error-template {padding: 40px 15px;text-align: center;}
+.error-actions {margin-top:15px;margin-bottom:15px;}
+.error-actions .btn { margin-right:10px; }</style></head>
+
+<body ondragstart="return false;" ondrop="return false;" cz-shortcut-listen="true">
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <div id="root"><div data-reactroot="" id="wrapper"><div><nav class="navbar navbar-default navbar-static-top" style="margin-bottom: 0px;"><div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://lms.codago.co/dashboard">Codago LMS</a></div><ul class="nav navbar-top-links navbar-right"><li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user fa-fw"></i><!-- react-text: 15 --> <!-- /react-text --><i class="fa fa-caret-down"></i></a><ul class="dropdown-menu dropdown-user"><li><a><i class="fa fa-user fa-fw"></i><!-- react-text: 21 --> <!-- /react-text --><!-- react-text: 22 -->toni  (student)<!-- /react-text --></a></li><li><a><i class="fa fa-gear fa-fw"></i><!-- react-text: 26 --> Change Password<!-- /react-text --></a></li><li class="divider"></li><li><a><i class="fa fa-sign-out fa-fw"></i><!-- react-text: 31 --> Logout<!-- /react-text --></a></li></ul></li></ul><div class="navbar-default sidebar" role="navigation"><div class="sidebar-nav navbar-collapse"><ul class="nav in" id="side-menu"><li class="sidebar-search"><div class="input-group custom-search-form"><input type="text" class="form-control" placeholder="Search..."><span class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span></div></li><li><a href="http://lms.codago.co/dashboard" class=""><i class="fa fa-dashboard fa-fw"></i><!-- react-text: 44 --> Dashboard<!-- /react-text --></a></li><li><a href="http://lms.codago.co/student" class=""><i class="fa fa-user fa-fw"></i><!-- react-text: 48 --> Student<!-- /react-text --></a></li><li><a href="http://lms.codago.co/challenge" class="active"><i class="fa fa-gamepad fa-fw"></i><!-- react-text: 52 --> Challenge<!-- /react-text --></a></li></ul></div></div></nav><!-- react-empty: 53 --></div><div id="page-wrapper" style="min-height: 578px;"><div class="row"><div class="col-lg-12"><h1 class="page-header">Challenge</h1></div></div><div class="row"><div class="panel panel-default"><div class="panel-heading">View Challenge</div><div class="panel-body"><div><div class="form-group"><label>Title</label><input class="form-control" name="score" value="challange#20-sqlite3Bread" disabled=""><p class="help-block"></p></div><div class="form-group"><label>Content</label><input class="form-control" name="score" value="sqlite3Bread" disabled=""><p class="help-block"></p></div><div class="form-group"><label>Category</label><input class="form-control" name="score" value="Pemograman Web" disabled=""><p class="help-block"></p></div><br><br><img draggable="false" src="./sqliteBread_files/1503283023022" alt="cropped image" id="cropper" class="img-thumbnail" style="width: 100%;"><br><br><button type="button" class="btn btn-success"><i class="fa fa-edit"></i><!-- react-text: 142 --> Finish<!-- /react-text --></button><br><br></div></div></div></div></div></div></div>
+  <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+<script type="text/javascript" src="./sqliteBread_files/bundle.js"></script>
+
+<!-- jQuery -->
+<script src="./sqliteBread_files/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="./sqliteBread_files/bootstrap.min.js"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="./sqliteBread_files/metisMenu.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="./sqliteBread_files/sb-admin-2.js"></script>
+
+</body></html>

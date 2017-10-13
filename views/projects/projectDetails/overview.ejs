@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title><%=title%></title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" title="no title">
+  <link rel="stylesheet" href="/css/sidebar.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project Management System</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="<%=(page=='dashboard') ? ' active':''%>"><a href="/dashboard">Home</a></li>
+            <li class="<%=(page=='project') ? ' active':''%>"><a href="/project">Projects</a></li>
+            <li class="<%=(page=='profile') ? ' active':''%>"><a href="/profile">Profile</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <% if(page == 'dashboard'){%>
+      <div class="jumbotron">
+        <h1>Project Management System</h1>
+        <p>Manage your system neat and quick</p>
+      </div>
+
+      <%}%>
+
+    </div>
+
+    <div class="container">
+
+      <div class="wrapper">
+        <nav id="sidebar">
+          <div class="sidebar-header">
+            <h3>Project Details</h3>
+          </div>
+
+          <ul class="list-unstyled components">
+            <li class="active">
+              <a href="#">Overview</a>
+            </li>
+            <li>
+              <a href="/project/<%=id%>/activity">Activity</a>
+            </li>
+            <li>
+              <a href="/project/<%=id%>/members">Members</a>
+            </li>
+            <li>
+              <a href="/project/<%=id%>/issues">Issues</a>
+            </li>
+          </ul>
+        </nav>
+
+        <div id="content">
+          <nav class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-body">
+                <h2>Overview</h2>
+              </div>
+            </div>
+          </nav>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Members</div>
+            <div class="panel-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if(member.length > 0){%>
+                    <% for(let i=0;i<member.length;i++){%>
+                      <tr>
+                        <td><%=member[i].userid%></td>
+                        <td><%=member[i].firstname%></td>
+                        <td><%=member[i].lastname%></td>
+                      </tr>
+                    <%}%>
+                  <%}else {%>
+                    <tr><td>no member found !</td></tr>
+                  <%}%>
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+          <div class="line"></div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/sidebar.js"></script>
+
+  </body>
+  </html>

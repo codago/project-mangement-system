@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title><%=title%></title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" title="no title">
+  <link rel="stylesheet" href="/css/sidebar.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project Management System</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="<%=(page=='dashboard') ? ' active':''%>"><a href="/dashboard">Home</a></li>
+            <li class="<%=(page=='project') ? ' active':''%>"><a href="/project">Projects</a></li>
+            <li class="<%=(page=='profile') ? ' active':''%>"><a href="/profile">Profile</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <% if(page == 'dashboard'){%>
+      <div class="jumbotron">
+        <h1>Project Management System</h1>
+        <p>Manage your system neat and quick</p>
+      </div>
+
+      <%}%>
+
+    </div>
+
+    <div class="container">
+
+      <div class="wrapper">
+        <nav id="sidebar">
+          <div class="sidebar-header">
+            <h3>Project Details</h3>
+          </div>
+
+          <ul class="list-unstyled components">
+            <li>
+              <a href="/project/<%=id%>/overview">Overview</a>
+            </li>
+            <li>
+              <a href="/project/<%=id%>/activity">Activity</a>
+            </li>
+            <li class="active">
+              <a href="#">Members</a>
+            </li>
+            <li>
+              <a href="/project/<%=id%>/issues">Issues</a>
+            </li>
+          </ul>
+        </nav>
+
+        <div id="content">
+          <nav class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-body">
+                <h2>Members</h2>
+              </div>
+            </div>
+          </nav>
+
+          <div class="panel panel-default">
+            <div class="panel-heading"><h1>Filters</h1></div>
+          </div>
+          <div class="line"></div>
+          <div class="panel-heading">
+            <form class="form-horizontal" method="get" action="/project/<%=id%>/members">
+              <div class="form-group row">
+                <label class="col-sm-2">
+                  <input class="col-sm-2" type="checkbox" name="cid" <%= query.cid ? " checked": ''%>>ID
+                </label>
+                <div class="col-sm-5">
+                  <input id="id" class="form-control" type="number" name="id" placeholder="ID" value="<%= query.id %>">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-2">
+                  <input class="col-sm-2" type="checkbox" name="cname" <%= query.cname ? " checked": ''%>>Name
+                </label>
+                <div class="col-sm-5">
+                  <input id="name" class="form-control" type="text" name="name" placeholder="Name" value="<%= query.name %>">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">
+                  <input type="checkbox" class="col-sm-2"name="cposition" <%= query.cposition ? " checked": ''%>>Position
+                </label>
+                <div class="col-sm-5">
+                  <select class="form-control" name="position" id="position" value="<%= query.position %>">
+                    <option selected disabled>Choose the Position ...</option>
+                    <option>Manager</option>
+                    <option>Software Developer</option>
+                    <option>Quality Assurance</option>
+                  </select>
+                </div>
+              </div>
+
+              <button class="btn btn-success" type="submit">Search</button>
+              <a href="/project/<%=id%>/members"class="btn btn-danger">Reset</a>
+            </form>
+
+            <hr>
+            <h1>Options</h1>
+            <h4>Columns</h4>
+            <form class="form-horizontal" action="/project/<%=id%>/members"method="post">
+              <div class="form-group row">
+                <label class="col-sm-1">ID</label>
+                <input class="col-sm-2" type="checkbox" name="coid" <%= membercolumns.coid ? "checked":''%>>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-1">Name</label>
+                <input class="col-sm-2" type="checkbox" name="coname" <%= membercolumns.coname ? "checked":''%>>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-1">Position</label>
+                <input class="col-sm-2" type="checkbox" name="coposition" <%= membercolumns.coposition ? "checked":''%>>
+              </div>
+              <button class="btn btn-success" type="submit">Apply</button>
+            </form>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <% let countrow = 1 %>
+                  <% if(membercolumns.coid){%><th>#</th><% countrow++}%>
+                  <% if(membercolumns.coname){%><th>Name</th><% countrow++}%>
+                  <% if(membercolumns.coposition){%><th>Position</th><% countrow++}%>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if(member.length > 0){%>
+                  <%for(let i=0;i<member.length;i++){%>
+                    <tr>
+                      <% if(membercolumns.coid){%> <td><%= member[i].userid%></td><%}%>
+                      <% if(membercolumns.coname){%> <td><%= member[i].firstname+" "+member[i].lastname%></td><%}%>
+                      <% if(membercolumns.coposition){%> <td><%= member[i].position%></td><%}%>
+                      <td>
+                      <%if(userData.privilege == "Admin"){%>
+                        <a href="/project/<%=member[i].userid%>/members/<%=id%>" class="btn btn-danger">Delete</a>
+                      <%}%>
+                      </td>
+                    </tr>
+                    <%}%>
+                    <%}else{%>
+                      <tr>
+                        <td colspan="1">no member found</td>
+                      </tr>
+                      <%}%>
+              </tbody>
+            </table>
+                  <%if(userData.privilege == "Admin"){%>
+                <a class="btn btn-success" href="/project/<%=id%>/members/memberadd">Add</a>
+                <%}%>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/sidebar.js"></script>
+
+  </body>
+  </html>

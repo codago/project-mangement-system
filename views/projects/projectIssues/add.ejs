@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title><%=title%></title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" title="no title">
+  <link rel="stylesheet" href="/css/sidebar.css">
+  <link rel="stylesheet" href="/css/issue.css">
+
+</head>
+<body>
+
+    <div class="container">
+
+      <div class="wrapper">
+
+
+        <div id="content">
+          <nav class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-body">
+              </div><!DOCTYPE html>
+              <html>
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <title><%=title%></title>
+                <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" title="no title">
+                <link rel="stylesheet" href="/css/sidebar.css">
+              </head>
+              <body>
+                <div class="container">
+                  <nav class="navbar navbar-default">
+                    <div class="container-fluid">
+                      <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                          <span class="sr-only">Toggle navigation</span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Project Management System</a>
+                      </div>
+                      <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                          <li class="<%=(page=='dashboard') ? ' active':''%>"><a href="/dashboard">Home</a></li>
+                          <li class="<%=(page=='project') ? ' active':''%>"><a href="/project">Projects</a></li>
+                          <li class="<%=(page=='profile') ? ' active':''%>"><a href="/profile">Profile</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                          <li><a href="/logout">Logout</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </nav>
+
+                  <% if(page == 'dashboard'){%>
+                    <div class="jumbotron">
+                      <h1>Project Management System</h1>
+                      <p>Manage your system neat and quick</p>
+                    </div>
+
+                    <%}%>
+
+                  </div>
+
+                  <div class="container">
+
+                    <div class="wrapper">
+                      <nav id="sidebar">
+                        <div class="sidebar-header">
+                          <h3>Project Details</h3>
+                        </div>
+
+                        <ul class="list-unstyled components">
+                          <li>
+                            <a href="/project/<%=id%>/overview">Overview</a>
+                          </li>
+                          <li>
+                            <a href="/project/<%=id%>/activity">Activity</a>
+                          </li>
+                          <li>
+                            <a href="/project/<%=id%>/members/">Members</a>
+                          </li>
+                          <li class="active">
+                            <a href="/project/<%=id%>/issues">Issues</a>
+                          </li>
+                        </ul>
+                      </nav>
+
+                      <div id="content">
+                        <nav class="navbar navbar-default">
+                          <div class="container-fluid">
+                            <div class="navbar-body">
+                              <h2>New Issue</h2>
+                            </div>
+                          </div>
+                        </nav>
+
+                        <div class="line"></div>
+
+                        <form class="form-horizontal" method="post" action="/project/<%=id%>/issue/add">
+                          <div class="form-group">
+                            <label class="control-label col-sm-2" for="pwd">Tracker</label>
+                            <div class="col-sm-5">
+                              <label class="col-sm-10 radio">
+                                <input type="radio" name="tracker" value="Bug" required>Bug
+                              </label>
+                              <label class="col-sm-10 radio">
+                                <input type="radio" name="tracker" value="Feature" required>Feature
+                              </label>
+                              <label class="col-sm-10 radio">
+                                <input type="radio" name="tracker" value="Support" required>Support
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="control-label col-sm-2" for="subject">Subject</label>
+                            <div class="col-sm-5">
+                              <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="control-label col-sm-2" for="description">Description</label>
+                            <div class="col-sm-5">
+                              <textarea type="text" class="form-control" id="description" name="description" placeholder="Description" required></textarea>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="control-label col-sm-2" for="pwd">Status</label>
+                            <div class="col-sm-5">
+                              <label class="col-sm-5 radio">
+                                <input type="radio" name="status" value="new" required>New
+                              </label>
+                              <label class="col-sm-10 radio">
+                                <input type="radio" name="status" value="In Progress" required>In Progress
+                              </label>
+                              <label class="col-sm-5 radio">
+                                <input type="radio" name="status" value="Resolved" required>Resolved
+                              </label>
+                              <label class="col-sm-10 radio">
+                                <input type="radio" name="status" value="Feedback" required>Feedback
+                              </label>
+                              <label class="col-sm-5 radio">
+                                <input type="radio" name="status" value="Closed" required>Closed
+                              </label>
+                              <label class="col-sm-10 radio">
+                                <input type="radio" name="status" value="Rejected" required>Rejected
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="control-label col-sm-2" for="pwd">Priority</label>
+                            <div class="col-sm-5">
+                              <label class="col-sm-5 radio">
+                                <input type="radio" name="priority" value="Normal" required>Normal
+                              </label>
+                              <label class="col-sm-10 radio">
+                                <input type="radio" name="priority" value="High" required>High
+                              </label>
+                              <label class="col-sm-5 radio">
+                                <input type="radio" name="priority" value="Urgent" required>Urgent
+                              </label>
+                              <label class="col-sm-10 radio">
+                                <input type="radio" name="priority" value="Immediate" required>Immediate
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="form-group row">
+                            <label class="control-label col-sm-2" for="assignee">Assignee</label>
+                            <div class="col-sm-5">
+                              <select class="form-control" name="assignee" id="assignee" required>
+                                <option value=""selected disabled>Choose the member ...</option>
+                                  <% for(let i=0; i<users.length; i++){ %><option value = "<%= users[i].userid %>"><%= `${users[i].firstname} ${users[i].lastname}` %></option><% } %>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="control-label col-sm-2" for="startdate">Start Date</label>
+                            <div class="col-sm-5">
+                              <input type="date" class="form-control" id="startdate" name="startdate" placeholder="Start Date" required>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="control-label col-sm-2" for="duedate">Due Date</label>
+                            <div class="col-sm-5">
+                              <input type="date" class="form-control" id="duedate" name="duedate" placeholder="Due Date" required>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="control-label col-sm-2" for="estimatedtime">Estimated Time</label>
+                            <div class="col-sm-5">
+                              <input type="text" class="form-control" id="estimatedtime" name="estimatedtime" placeholder="Estimated Time" required>
+                            </div>
+                          </div>
+
+                          <div class="form-group row">
+                            <label class="control-label col-sm-2" for="percentdone">% done</label>
+                            <div class="col-sm-5">
+                              <select class="form-control" name="percentdone" id="percentdone" required>
+                                <option value="">Choose progress ...</option>
+                                <option value = "0">0</option>
+                                <option value = "25">25</option>
+                                <option value = "50">50</option>
+                                <option value = "75">75</option>
+                                <option value = "100">100</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <button class="btn btn-success" type="submit">Save</button>
+                        </form>
+                    <%if(message.length > 0) {%><label class="label label-success"><%=message%></label><%}%>
+                      </div>
+                    </div>
+                  </div>
+
+                  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="crossorigin="anonymous"></script>
+                  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+                  <script type="text/javascript" src="/js/sidebar.js"></script>
+
+                </body>
+                </html>

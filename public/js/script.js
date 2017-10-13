@@ -2,6 +2,6 @@ $('.ui.dropdown')
   .dropdown()
 ;
 
-$('.ui.radio.checkbox')
+$('.radio.checkbox')
   .checkbox()
 ;

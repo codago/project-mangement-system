@@ -1,0 +1,41 @@
+<% include partials/header %>
+<% include partials/menu %>
+
+<div class="container">
+  <h1>List Members</h1>
+  <hr>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Position</th>
+        <th>Fulltime</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if(users.length > 0){%>
+        <%for(let i=0;i<users.length;i++){%>
+          <tr>
+            <td><%= users[i].userid%></td>
+            <td><%= users[i].email%></td>
+            <td><%= users[i].firstname+" "+users[i].lastname%></td>
+            <td><%= users[i].position %></td>
+            <td><%= users[i].isfulltime %></td>
+            <td>
+                <a href="/updatemember/<%=users[i].userid%>" class="btn btn-success"><i class="fa fa-wrench" aria-hidden="true">&nbsp</i>Edit</a>
+                <a href="/deletemember/<%=users[i].userid%>" class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true">&nbsp</i>Delete</a>
+            </td>
+            </tr>
+            <%}%>
+            <%}else{%>
+              <tr>
+                <td colspan="1">data kosong</td>
+              </tr>
+              <%}%>
+            </tbody>
+          </table>
+        </div>
+        <% include partials/footer %>

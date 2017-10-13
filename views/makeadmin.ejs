@@ -1,0 +1,38 @@
+<% include partials/header %>
+<% include partials/menu %>
+<div class="container">
+  <form class="form-horizontal" method="post" action="/makeadmin">
+
+    <div class="form-group row">
+      <label class="control-label col-sm-1" for="member">Member</label>
+      <div class="col-sm-5">
+        <select class="form-control" name="member" id="member"required>
+          <option selected disabled value="">Choose the member ...</option>
+          <% for(let i=0; i<users.length; i++){ %><option value = "<%= users[i].userid %>"><%= `${users[i].firstname} ${users[i].lastname}` %></option><% } %>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-sm-1" for="pwd">Privilege</label>
+      <div class="col-sm-5">
+        <select class="form-control" name="privilege" id="privilege"required>
+          <option selected disabled value="">Choose member privilege ...</option>
+            <option value="Admin">Admin</option>
+            <option value="User">User</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-offset-1 col-sm-5">
+        <button type="Update" class="btn btn-success">Update</button>
+
+      </div>
+    </div>
+  <%if(message.length > 0) {%><label class="label label-success"><%=message%></label><%}%>
+  </form>
+
+</div>
+
+<% include partials/footer %>

@@ -1,16 +1,53 @@
-<div class="ui secondary pointing menu">
-  <a href="/dashboard" class="item<%= (page=='dashboard')? ' active':''%>">
-    Project Management System
-  </a>
-  <a href="/project" class="item<%= (page=='project')? ' active':''%>">
-    Projects
-  </a>
-  <a href="/profile" class="item<%= (page=='profile')? ' active':''%>">
-    Profile
-  </a>
-  <div class="right menu">
-    <a class="ui item" href="/logout">
-      Logout
-    </a>
-  </div>
-</div>
+<div class="container">
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Project Management System</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="<%=(page=='dashboard') ? ' active':''%>"><a href="/dashboard"><i class="fa fa-home" aria-hidden="true"></i>&nbspHome</a></li>
+          <li class="<%=(page=='project') ? ' active':''%>"><a href="/project"><i class="fa fa-tasks" aria-hidden="true"></i>&nbspProjects</a></li>
+          <%if(userData.privilege == "User"){%>
+            <li class="<%=(page=='profile') ? ' active':''%>"><a href="/profile"><i class="fa fa-user" aria-hidden="true"></i>&nbspProfile</a></li>
+            <%}%>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <%if(userData.privilege == "Admin"){%>
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <i class="fa fa-cogs" aria-hidden="true"></i> Setting
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                  <li class="<%=(page=='profile') ? ' active':''%>"><a href="/profile"><i class="fa fa-user" aria-hidden="true"></i>&nbsp&nbspProfile</a></li>
+                  <li class="<%=(page=='edituser') ? ' active':''%>"><a href="/listMembers"><i class="fa fa-pencil fa-fw"></i>List members</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="<%=(page=='makeadmin') ? ' active':''%>"><a href="/makeadmin"><i class="fa fa-unlock"></i> Make admin</a></li>
+                  <li><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbspLogout</a></li>
+                </ul>
+              </div>
+              <%}%>
+              <%if(userData.privilege == "User"){%>
+                <li><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbspLogout</a></li>
+                <%}%>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <% if(page == 'dashboard'){%>
+          <div class="jumbotron">
+            <h1>Project Management System</h1>
+            <p>Manage your system neat and quick</p>
+          </div>
+
+          <%}%>
+
+        </div>
