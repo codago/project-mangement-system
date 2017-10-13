@@ -362,7 +362,7 @@ router.get('/details/:id/issues', userChecker, function(req, res) {
 
     let filterQuery = [];
     let isFilter = false;
-    sqlQuery = 'SELECT count(*) AS total FROM issues' //pagination
+    sqlQuery = `SELECT count(*) AS total FROM issues WHERE projectid = ${req.params.id}` //pagination
 
     console.log("trackers ===", req.query.trackers);
     console.log("issuesid ===", req.query.issuesid);
@@ -551,11 +551,10 @@ router.get('/details/:id/issues/add', userChecker, function(req, res) {
     let estimatedTime = req.body.estimatedtime;
     let percentageDone = req.body.done;
     let files = req.body.files;
-    let query = `INSERT INTO issues(projectid, tracker, subject, description, status, priority, assignee, startdate, duedate, estimatedtime, done, files)
-    VALUES(${projectid},'${tracker}','${subject}', '${description}', '${status}', '${priority}', '${asignee}', '${startDate}', '${dueDate}', '${estimatedTime}', '${percentageDone}', '${files}')`
+    let query = `INSERT INTO issues(projectid, tracker, subject, description, status, priority, assignee, startdate, duedate, estimatedtime, done, files, spenttime, targetversion, createddate, updateddate, closeddate)
+    VALUES(${projectid},'${tracker}','${subject}', '${description}', '${status}', '${priority}', '${asignee}', '${startDate}', '${dueDate}', '${estimatedTime}', '${percentageDone}', '${files}', {}, {}, {}, {}, {})`
     console.log(query);
-    db.query(`INSERT INTO issues(projectid, tracker, subject, description, status, priority, assignee, startdate, duedate, estimatedtime, done, files)
-    VALUES(${projectid},'${tracker}','${subject}', '${description}', '${status}', '${priority}', '${asignee}', '${startDate}', '${dueDate}', '${estimatedTime}', '${percentageDone}', '${files}')`, function(err) {
+    db.query(query, function(err) {
       if(err) {
         console.error(err);
       }
@@ -564,7 +563,7 @@ router.get('/details/:id/issues/add', userChecker, function(req, res) {
       let activityHours = `${moment().format('HH:mm')}`
       let activityAuthor = `${req.session.user.firstname} ${req.session.user.lastname}`
       let activityDate = `${moment().format('YYYY-MM-DD')}`
-      sqlQuery = `INSERT INTO activity(title, description, hours, author, date, projectid)
+      let sqlQuery = `INSERT INTO activity(title, description, hours, author, date, projectid)
       VALUES (${activityTitle}, ${activityDesc}, ${activityHours}, ${activityAuthor}, NOW(), ${req.params.id});`
       db.query(sqlQuery, function(err){
         if(err){
@@ -618,14 +617,16 @@ router.get('/details/:id/issues/add', userChecker, function(req, res) {
     let dueDate = req.body.duedate;
     let estimatedTime = req.body.estimatedtime;
     let percentageDone = req.body.done;
-    let files = req.body.files;
     let spenttime = req.body.spenttime;
-    let targetversion = req.body.targetversion;
-    let author = req.body.author;
     let projectid = req.params.id;
+    let targetversion = req.body.targetversion;
+    let createddate = req.body.createddate;
+    let updateddate = req.body.updateddate;
+    let closeddate = req.body.closeddate;
     let sqlQuery = `UPDATE issues SET tracker = '${tracker}', subject = '${subject}', description = '${description}',
     status = '${status}', priority = '${priority}', assignee = ${asignee}, startdate = '${startDate}',
-    duedate = '${dueDate}', estimatedtime = ${estimatedTime}, done = ${percentageDone} WHERE issuesid = ${issuesid}`
+    duedate = '${dueDate}', estimatedtime = ${estimatedTime}, done = ${percentageDone}, spenttime = ${spenttime}, targetversion = '${targetversion}',
+    createddate = '${createddate}', updateddate = '${updateddate}', closeddate = '${closeddate}' WHERE issuesid = ${issuesid}`
     console.log(sqlQuery);
     db.query(sqlQuery, function(err) {
       if(err) {
@@ -660,7 +661,7 @@ router.get('/details/:id/issues/add', userChecker, function(req, res) {
     })
   })
 
-  router.post('/details/:id/issues/upload/:issuesid', userChecker, function(req, res) {
+    router.post('/details/:id/issues/upload/:issuesid', userChecker, function(req, res) {
     if(!req.files) {
       return res.status(400).send('No files were uploaded.');
     }
@@ -711,6 +712,31 @@ router.get('/details/:id/issues/add', userChecker, function(req, res) {
       })
     })
   });
+
+  router.get('/details/:id/issues/edit/:issueidURL/deleteimage/fileObject[prop]', userChecker, function(req, res){
+    sqlQuery = `SELECT * FROM issues WHERE issuesid = ${req.params.issuesid}`;
+    db.query(sqlQuery, function(err, issuesData){
+      if(err){
+        console.error(err);
+      }
+    let filesIssues = JSON.parse(issuesData.rows[0].files);
+    filesIssues[fileName] = `${fileName}.${fileExtension}`
+    let insertedData = JSON.stringify(filesIssues);
+    sqlQuery = `DELETE FROM issues WHERE issuesid = ${req.params.issuesid} AND files = ${req.body.files}` ;
+    db.query(sqlQuery, function(err){
+      if(err){
+        console.error(err);
+      }
+    res.render('issues/edit', {
+      title: "Project Issues",
+      page: "project",
+      idURL: req.params.id,
+      issueidURL: req.params.issuesid,
+      userSession: req.session.user
+    })
+  })
+})
+})
 
   router.get('/details/:id/activity', userChecker, function(req, res){
     let activityDate = `${moment().format('YYYY-MM-DD')}`

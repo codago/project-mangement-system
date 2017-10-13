@@ -147,7 +147,7 @@
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">
                   <input class="form-check-input"  type="checkbox" name="cdone" value="True"<%= query.cdone ? " checked" : ""%>>
-                  % Done
+                  Percentage Done(%)
                 </label>
                 <div class="col-sm-10">
                   <input class="form-control" type="number" name="done"  value="<%= query.done %>" min="0" max="100" placeholder="percentage done">
@@ -171,8 +171,9 @@
           <div class="panel-body">
             <form class="" action="/projects/details/<%= idURL %>/issues" method="post">
               <div class="form-group row">
-                <label class="col-sm-2 control-label">columns</label>
-                <div class="col-sm-10">
+                <label class="col-sm-2 control-label">columns</label><br><br>
+                </div>
+                <div class="col-sm-2">
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" name="coid" value="true"<%= issuecolumns.coid ? " checked" : "" %>>
@@ -192,7 +193,6 @@
                     </label>
                   </div>
                 </div>
-              </div>
               <div class="col-sm-2">
                 <div class="checkbox">
                   <label>
@@ -243,7 +243,41 @@
                 <div class="checkbox">
                   <label>
                     <input type="checkbox" name="codone" value="true"<%= issuecolumns.codone ? " checked" : ""%>>
-                    % Done
+                    Percentage Done
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="cospenttime" value="true"<%= issuecolumns.cospenttime ? " checked" : ""%>>
+                    Spent Time
+                  </label>
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="cotargetversion" value="true"<%= issuecolumns.cotargetversion ? " checked" : ""%>>
+                    Target Version
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="cocreateddate" value="true"<%= issuecolumns.cocreateddate ? " checked" : ""%>>
+                    Created Date
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="coupdateddate" value="true"<%= issuecolumns.coupdateddate ? " checked" : ""%>>
+                    Updated Date
+                  </label>
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="cocloseddate" value="true"<%= issuecolumns.cocloseddate ? " checked" : ""%>>
+                    Closed Date
                   </label>
                 </div>
                 <div class="checkbox">
@@ -255,7 +289,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <div class="col-sm-10">
+              <div class="col-sm-2">
                 <button type="submit" class="btn btn-primary">Apply</button>
               </div>
             </div>
@@ -281,7 +315,12 @@
                   <% if(issuecolumns.costartdate) {%><th>Start Date</th><%}%>
                   <% if(issuecolumns.coduedate) {%><th>Due Date</th><%}%>
                   <% if(issuecolumns.coestimatedtime) {%><th>Estimated Time</th><%}%>
-                  <% if(issuecolumns.codone) {%><th>% Done</th><%}%>
+                  <% if(issuecolumns.codone) {%><th>Percentage Done</th><%}%>
+                  <% if(issuecolumns.cospenttime) {%><th> Spent Time</th><%}%>
+                  <% if(issuecolumns.cotargetversion) {%><th> Target Version</th><%}%>
+                  <% if(issuecolumns.cocreateddate) {%><th> Created Date</th><%}%>
+                  <% if(issuecolumns.coupdateddate) {%><th> Updated Date</th><%}%>
+                  <% if(issuecolumns.cocloseddate) {%><th> Closed Date</th><%}%>
                   <% if(issuecolumns.coaction) {%><th>Action</th><%}%>
                 </tr>
               </thead>
@@ -306,6 +345,11 @@
                           <%if(issuecolumns.coduedate) {%><td><%= issuesData[i].duedate %></td><%}%>
                           <%if(issuecolumns.coestimatedtime) {%><td><%= issuesData[i].estimatedtime %></td><%}%>
                           <%if(issuecolumns.codone) {%><td><%= issuesData[i].done %></td><%}%>
+                          <% if(issuecolumns.cospenttime) {%><td><%= issuesData[i].spenttime %></td><%}%>
+                          <% if(issuecolumns.cotargetversion) {%><td><%= issuesData[i].targetversion %></td><%}%>
+                          <% if(issuecolumns.cocreateddate) {%><td><%= issuesData[i].createddate %></td><%}%>
+                          <% if(issuecolumns.coupdateddate) {%><td><%= issuesData[i].updateddate %></td><%}%>
+                          <% if(issuecolumns.cocloseddate) {%><td><%= issuesData[i].closeddate %></td><%}%>
                           <%if(issuecolumns.coaction) {%>
                             <td>
                               <a href='/projects/details/<%= idURL %>/issues/edit/<%= issuesData[i].issuesid %>' class="btn btn-success" type="button" name="button" style="width: 100%;
