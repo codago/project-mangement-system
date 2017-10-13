@@ -22,6 +22,7 @@ module.exports = function(db) {
         if(passwordHash.verify(req.body.pass, data.rows[0].password)) {
           delete data.rows[0].password;
           req.session.user = data.rows[0]
+          console.log(req.session.user);
           return res.redirect('/projects')
         } else {
           req.flash('loginMessage', 'password is not match');
@@ -58,7 +59,7 @@ module.exports = function(db) {
         req.flash('registerMessage', 'email already registered');
         return res.redirect('/register')
       } else {
-        db.query(`INSERT INTO users(email, password, projectcolumns) VALUES('${req.body.email}', '${passwordHash.generate(req.body.pass)}', '{}')`, (err, data) => { //di tambah projectcolumns dan {} ss
+        db.query(`INSERT INTO users(email, password, projectcolumns, issuecolumns) VALUES('${req.body.email}', '${passwordHash.generate(req.body.pass)}', '{}', '{}')`, (err, data) => { //di tambah projectcolumns dan {} ss. disini juga harus bikin member baru untuk menjalankan fungsi yang baru yaitu issuecolumns
           if(err) {
             console.error(err);
             req.flash('registerMessage', 'something wrong please call administrator');
