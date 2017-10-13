@@ -1,0 +1,39 @@
+<% include partials/header %>
+<div class="">
+
+  <nav  class="navbar navbar-default">
+    <ul class="nav nav-tabs nav-justified">
+      <h1 class="text-center" >Prjoect Management Sistem</h1>
+      <hr width="50%" align="center">
+
+      <li role="presentation" class="active"><a href="/">Login</a></li>
+      <li role="presentation"><a href="/register">Register</a></li>
+    </ul>
+  </nav>
+
+  <div class="container" style="padding-top: 90px">
+    <div class="col-sm-6 col-sm-offset-3">
+      <% if(messages.length > 0){ %>
+        <p><%= messages %></p>
+        <% } %>
+        <form action="/login" method="post">
+          <div class="form-group">
+            <input class="form-control" type="text" name="email" id="email" placeholder="Email Address">
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password">
+          </div>
+          <br>
+          <div class="text-center" >
+            <button type="submit" class="btn btn-primary btn-lg btn-block"> Login</button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+
+
+  <% include partials/footer %>
