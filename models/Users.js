@@ -111,5 +111,17 @@ module.exports = {
         if(err)console.log(err);
         cb(err)
     })
+  },
+  findUser:function(firstname,cb){
+    db.query(`select firstname from users where firstname = '${firstname}'`,function(err,res){
+      if(err)console.log(err);
+      cb(res.rows)
+    })
+  },
+  findEmail:function(email,cb){
+    db.query(`select email from users where email = '${email}'`,function(err,res){
+      if(err)console.log(err);
+      cb(res.rows)
+    })
   }
 }

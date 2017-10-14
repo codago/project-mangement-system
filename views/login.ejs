@@ -32,73 +32,88 @@
               <%if(messageLogin.length > 0) {%>
                 <p class="text-danger"style="color:red;"><%=messageLogin%></p>
                 <%}%>
-              <p class="keeplogin">
-                <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" />
-                <label for="loginkeeping">Keep me logged in</label>
-              </p>
-              <p class="signin button">
-                <input type="submit" value="Sign In"/>
-              </p>
-              <p class="change_link">
-                Not a member yet ?
-                <a href="#toregister" class="to_register">Join us</a>
-              </p>
-            </form>
-
-          </div>
-
-          <div id="register" class="animate form">
-            <form  method="post" action="/signup">
-              <h1> Sign up </h1>
-              <p>
-                <label for="usernamesignup" class="uname" >First Name</label>
-                <input id="usernamesignup" name="firstname" required="required" type="text" placeholder="mysuperusername690" />
-              </p>
-              <p>
-                <label for="usernamesignup" class="uname" >Last Name</label>
-                <input id="usernamesignup" name="lastname" required="required" type="text" placeholder="mysuperusername690" />
-              </p>
-
-              <p>
-                <label for="emailsignup" class="youmail"  > Your email</label>
-                <input id="emailsignup" name="email" required="required" type="email" placeholder="mysupermail@mail.com"/>
-              </p>
-              <%if(messagePassword.length > 0) {%>
-                <p>
-                  <label for="passwordsignup" class="youpasswd" >Your password </label>
-                  <input id="passwordsignup" style="border:1px solid rgb(255, 0, 0);"name="password" required="required" type="password" placeholder="password dont match"/>
+                <p class="keeplogin">
+                  <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" />
+                  <label for="loginkeeping">Keep me logged in</label>
                 </p>
-                <p>
-                  <label for="passwordsignup_confirm" class="youpasswd" >Please confirm your password </label>
-                  <input id="passwordsignup_confirm" style="border:1px solid rgb(255, 0, 0);"name="password2" required="required" type="password" placeholder="password dont match"/>
+                <p class="signin button">
+                  <input type="submit" value="Sign In"/>
                 </p>
+                <p class="change_link">
+                  Not a member yet ?
+                  <a href="#toregister" class="to_register">Join us</a>
+                </p>
+              </form>
+
+            </div>
+
+            <div id="register" class="animate form">
+              <form  method="post" action="/signup">
+                <h1> Sign up </h1>
+                <%if(messageUsername.length > 0) {%>
+                  <p>
+                    <label for="usernamesignup" class="uname" >First Name</label>
+                    <input id="usernamesignup"style="border:1px solid rgb(255, 0, 0);" name="firstname" required="required" type="text" placeholder="name already exist" />
+                  </p>
                 <%}else{%>
                   <p>
-                    <label for="passwordsignup" class="youpasswd" >Your password </label>
-                    <input id="passwordsignup" name="password" required="required" type="password" placeholder="eg. X8df!90EO"/>
-                  </p>
-                  <p>
-                    <label for="passwordsignup_confirm" class="youpasswd" >Please confirm your password </label>
-                    <input id="passwordsignup_confirm" name="password2" required="required" type="password" placeholder="eg. X8df!90EO"/>
+                    <label for="usernamesignup" class="uname" >First Name</label>
+                    <input id="usernamesignup" name="firstname" required="required" type="text" placeholder="mysuperusername690" />
                   </p>
                 <%}%>
 
-              <%if(messageRegister.length > 0) {%>
-                <p class="text-danger" style="color:red;"><%=messageRegister%></p>
-                <%}%>
-              <p class="signin button">
-                <input type="submit" value="Sign up"/>
-              </p>
-              <p class="change_link">
-                Already a member ?
-                <a href="#tologin" class="to_register"> Go and log in </a>
-              </p>
-            </form>
-          </div>
+                    <p>
+                      <label for="usernamesignup" class="uname" >Last Name</label>
+                      <input id="usernamesignup" name="lastname" required="required" type="text" placeholder="mysuperusername690" />
+                    </p>
+                    <%if(messageEmail.length > 0) {%>
+                      <p>
+                        <label for="emailsignup" class="youmail"  > Your email</label>
+                        <input id="emailsignup" style="border:1px solid rgb(255, 0, 0);" name="email" required="required" type="email" placeholder="email already exist"/>
+                      </p>
+                      <%}else{%>
+                        <p>
+                          <label for="emailsignup" class="youmail"  > Your email</label>
+                          <input id="emailsignup" name="email" required="required" type="email" placeholder="mysupermail@mail.com"/>
+                        </p>
+                        <%}%>
 
-        </div>
-      </div>
-    </section>
-  </div>
-</body>
-</html>
+                        <%if(messagePassword.length > 0) {%>
+                          <p>
+                            <label for="passwordsignup" class="youpasswd" >Your password </label>
+                            <input id="passwordsignup" style="border:1px solid rgb(255, 0, 0);"name="password" required="required" type="password" placeholder="password dont match"/>
+                          </p>
+                          <p>
+                            <label for="passwordsignup_confirm" class="youpasswd" >Please confirm your password </label>
+                            <input id="passwordsignup_confirm" style="border:1px solid rgb(255, 0, 0);"name="password2" required="required" type="password" placeholder="password dont match"/>
+                          </p>
+                          <%}else{%>
+                            <p>
+                              <label for="passwordsignup" class="youpasswd" >Your password </label>
+                              <input id="passwordsignup" name="password" required="required" type="password" placeholder="eg. X8df!90EO"/>
+                            </p>
+                            <p>
+                              <label for="passwordsignup_confirm" class="youpasswd" >Please confirm your password </label>
+                              <input id="passwordsignup_confirm" name="password2" required="required" type="password" placeholder="eg. X8df!90EO"/>
+                            </p>
+                            <%}%>
+
+                            <%if(messageRegister.length > 0) {%>
+                              <span class="label label-warning"><%=messageRegister%></span>
+                              <%}%>
+                              <p class="signin button">
+                                <input type="submit" value="Sign up"/>
+                              </p>
+                              <p class="change_link">
+                                Already a member ?
+                                <a href="#tologin" class="to_register"> Go and log in </a>
+                              </p>
+                            </form>
+                          </div>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </body>
+                </html>

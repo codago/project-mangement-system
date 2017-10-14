@@ -35,7 +35,9 @@ module.exports = {
         title:"Project Management System",
         messageLogin:req.flash("loginMessage"),
         messageRegister:req.flash("messageRegister"),
-        messagePassword:req.flash("messagePassword")
+        messagePassword:req.flash("messagePassword"),
+        messageUsername:req.flash("messageUsername"),
+        messageEmail:req.flash("messageEmail")
       })
     }
   },
@@ -48,23 +50,33 @@ module.exports = {
     let isfulltime = false
     let projectcolumns = "{}"
     let privilege = "User"
-    if(password === password2){
-      user.register(firstname,lastname,email,password,isfulltime,projectcolumns,privilege,function(err){
-        if(err){
-          if(password !=password2){
-            req.flash("messagePassword","password dont match")
-          }
-          req.flash("messageRegister","fail to register")
+    let isName = false
+    let isEmail = false
+    let isPassword = false
+    if(password != password2)isPassword = true
+    user.findUser(firstname,function(userpass){
+      if(userpass.length > 0)isName = true
+      user.findEmail(email,function(usermail){
+        if(usermail.length > 0)isEmail = true
+        if(password === password2 && userpass.length === 0 && usermail.length === 0){
+            user.register(firstname,lastname,email,password,isfulltime,projectcolumns,privilege,function(err){
+              if(err){
+                req.flash("messageRegister","fail to register")
+              }else{
+                req.flash("messageRegister","register successfull")
+              }
+              res.redirect('/login#toregister')
+            })
         }else{
-          req.flash("messageRegister","register successfull")
+          if(isName)req.flash("messageUsername",'username already exist')
+          if(isEmail)req.flash("messageEmail","email already exist")
+          if(isPassword)req.flash("messagePassword","password dont match")
+
+          req.flash("messageRegister","fail to register")
+          res.redirect('/login#toregister')
         }
-        res.redirect('/login#toregister')
       })
-    }else{
-      req.flash("messagePassword","password dont match")
-      req.flash("messageRegister","fail to register")
-      res.redirect('/login#toregister')
-    }
+    })
 
   },
   login:function(req,res){
