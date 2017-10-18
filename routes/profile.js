@@ -22,13 +22,13 @@ router.get('/',userChecker, (req, res) =>{
 router.post('/', (req, res) => {
 
     let pass = req.body.password;
-console.log(pass.length);
+//console.log(pass.length);
   if (pass.length == 0) {
     res.redirect('/profile')
   }else {
     client.query(`SELECT password FROM users WHERE userid='${req.session.user.userid}'` ,(err, data)=>{
       let passworddb = data.rows[0].password;
-      console.log( passworddb);
+    //  console.log( passworddb);
       if (pass != passworddb ) {
         res.redirect('/profile')
       }else {

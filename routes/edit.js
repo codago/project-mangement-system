@@ -13,20 +13,43 @@ router.get('/:id', function(req, res){
       console.error(err);
       return res.send(err);
     }
-    res.render('edit' ,{data: data.rows[0]})
+      client.query(`select members.*, users.email from members left join users on users.userid = members.userid`, (err, user) =>{
+
+        res.render('edit' ,{data: data.rows[0],user:user.rows})
+      })
 
   })
 })
 
-router.post('/:id', function(req, res){
-  let id = req.params.id;
-  let name = req.body.name;
+router.post('/:id', function(req, res) {
+  let name = req.body.name
+    let id = req.params.id;
+
   client.query(`UPDATE projects SET name='${name}' WHERE projectid=${id}`, (err)=>{
-    if (err) {
+    let idlast = id;
+    if(err) {
       console.error(err);
-      return res.send(err);
+      res.send(err);
     }
-    res.redirect('/projects')
+
+    let member = req.body.member;
+    if( typeof member == 'object' ){
+      member.forEach((val, index, arr)=> {
+        client.query(`SELECT * FROM members  WHERE userid='${val}'` , (err, ins)=>{
+        //  console.log(val,'adds', ins.rowCount);
+          if(ins.rowCount){
+            client.query(`Update members set projectid='${idlast}'  WHERE userid='${val}'`)
+          }
+        })
+      })
+    }else if(member){
+      client.query(`SELECT * FROM members  WHERE userid='${member}'` , (err, ins)=>{
+        if(ins.rowCount)
+          client.query(`Update members set projectid='${idlast}'  WHERE userid='${member}'`)
+      })
+    }
+
+    res.redirect('/projects');
   })
 })
 
