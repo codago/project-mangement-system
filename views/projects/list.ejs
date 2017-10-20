@@ -1,5 +1,6 @@
 <% include ../partials/header %>
 <% include ../partials/menu %>
+
 <div class="container" style="backgorund-color: white">
   <h1>Projects</h1>
   <div class="panel panel-default">
@@ -113,7 +114,7 @@
                       edit
                     </button>
                   </a>
-                  <a href='/projects/delete/<%= listData[i].projectid %>'>
+                  <a href='/projects/delete/<%= +listData[i].projectid %>'>
                     <button class="btn btn-danger" type="button" name="button"
                     onclick="return confirm('Are you sure you want to delete this item?')">
                     delete

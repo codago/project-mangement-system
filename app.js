@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const session = require('express-session');
 const { Pool } = require("pg");
+const fileUpload = require('express-fileupload');
 
 const pool = new Pool(
   {
@@ -21,6 +22,7 @@ const pool = new Pool(
 var index = require('./routes/index')(pool);
 var users = require('./routes/users')(pool);
 var projects = require("./routes/project")(pool);
+var setting = require("./routes/setting")(pool);
 
 var app = express();
 
@@ -34,6 +36,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(fileUpload());
 app.use(session({
   secret: 'mikha',
   resave: false,
@@ -50,9 +53,11 @@ app.use(function(req, res, next) {
 });
 
 
+
 app.use('/', index);
 app.use("/users", users);
 app.use("/projects", projects);
+app.use("/setting", setting)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

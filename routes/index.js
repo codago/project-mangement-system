@@ -4,17 +4,23 @@ var passwordHash = require('password-hash');
 
 /* GET home page. */
 module.exports = function(db) {
+
   router.get('/', function(req, res, next) {
-    res.render('login', { title: 'Login'});
+    // var message = new Array(req.flash('loginMessage')[0])
+    res.render('users/index');
   });
 
-  router.post('/', function(req, res, next) {
+  router.get('/login', function(req, res, next) {
+    res.render('login', { title: 'Login', message: req.flash('loginMessage')});
+  });
+
+  router.post('/login', function(req, res, next) {
     console.log("masuk", req.body);
     db.query(`SELECT * FROM users WHERE email = '${req.body.email}'`, (err, data) => {
       if(err) {
         console.error(err);
         req.flash('loginMessage', 'something wrong please call administrator');
-        return res.redirect('/')
+        return res.redirect('/login')
       }
       console.log("masukin lagi dong");
       if(data.rows.length > 0) {
@@ -59,7 +65,7 @@ module.exports = function(db) {
         req.flash('registerMessage', 'email already registered');
         return res.redirect('/register')
       } else {
-        db.query(`INSERT INTO users(email, password, projectcolumns, issuecolumns) VALUES('${req.body.email}', '${passwordHash.generate(req.body.pass)}', '{}', '{}')`, (err, data) => { //di tambah projectcolumns dan {} ss. disini juga harus bikin member baru untuk menjalankan fungsi yang baru yaitu issuecolumns
+        db.query(`INSERT INTO users(email, password, projectcolumns, membercolumns, issuecolumns, privilege) VALUES('${req.body.email}', '${passwordHash.generate(req.body.pass)}', '{}', '{}', '{}', '{}')`, (err, data) => { //di tambah projectcolumns dan {} ss. disini juga harus bikin member baru untuk menjalankan fungsi yang baru yaitu issuecolumns
           if(err) {
             console.error(err);
             req.flash('registerMessage', 'something wrong please call administrator');

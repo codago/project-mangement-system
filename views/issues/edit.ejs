@@ -42,7 +42,7 @@
               <div class="radio">
                 <label>
                   <input type="radio" name="tracker"  value="Feature"<%=(selectedIssueData.tracker === "Feature") ? " checked" : ""%> >
-                  Feature
+                  Features
                 </label>
               </div>
               <div class="radio">
@@ -164,7 +164,7 @@
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Estimated Time (minutes)</label>
                 <div class="col-sm-10">
-                  <input class="form-control" type="number" name="estimatedtime" value="<%=selectedIssueData.estimatedtime%>" placeholder="estimated time">
+                  <input class="form-control" type="number" name="estimatedtime" value="<%=selectedIssueData.estimatedtime%>" placeholder="estimated time" min="0">
                 </div>
               </div>
               <div class="form-group row">
@@ -174,21 +174,50 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Files</label>
+                 <label class="col-sm-2 col-form-label">Files</label>
+                 <div class="col-sm-10">
+                   <% let filesObject = JSON.parse(selectedIssueData.files)%>
+                   <% for(let prop in filesObject) {%>
+                   <a href="/assets/<%=filesObject[prop]%>">
+                     <img src="/assets/<%=filesObject[prop]%>" height="42" width="42">
+                   </a>
+                   <a href="/projects/details/<%=idURL%>/issues/edit/<%=issueidURL%>/deleteimage/<%=filesObject[prop]%>"
+                   onclick="return confirm('Your current edit configuration will be lost and this will delete the image file, are you sure you want to do this?')">
+                     <span color="red" class="fa fa-trash"></span>
+                   </a>
+                   <% } %>
+                 </div>
+               </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Spent Time (Minutes)</label>
                 <div class="col-sm-10">
-                  <% let filesObject = JSON.parse(selectedIssueData.files)%>
-                  <% for(let prop in filesObject) {%>
-                  <a href="../../../../../assets/<%=filesObject[prop]%>">
-                    <img src="../../../../../assets/<%=filesObject[prop]%>" height="42" width="42">
-                  </a>
-                  <a href="/projects/overviews/<%=idURL%>/issues/edit/<%=issueidURL%>/deleteimage/<%=filesObject[prop]%>"
-                  onclick="return confirm('Your current edit configuration will be lost and this will delete the image file, are you sure you want to do this?')">
-                    <span color="red" class="fa fa-trash"></span>
-                  </a>
-                  <% } %>
+                  <input class="form-control" type="number" name="spenttime" value="<%=selectedIssueData.spenttime%>" min="0">
                 </div>
               </div>
-
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Target Version</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="text" name="targetversion" value="<%=selectedIssueData.targetversion%>" placeholder="Target Version">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Created Date</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="date" name="createddate" value="<%=selectedIssueData.createddate%>" placeholder="Created Date">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Updated Date</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="date" name="updateddate" value="<%=selectedIssueData.updateddate%>" placeholder="Updated Date">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Closed Date</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="date" name="closeddate" value="<%=selectedIssueData.closeddate%>" placeholder="Closed Date">
+                </div>
+              </div>
 
             <div class="form-group row">
               <div class="col-sm-10">

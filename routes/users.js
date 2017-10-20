@@ -15,9 +15,11 @@ module.exports = function(db) {
 
 router.get('/profile', userChecker, function(req, res, next) {
   db.query(`SELECT * FROM users WHERE userid = ${req.session.user.userid}`, (err, data) => {
-    res.render('users/profile', { title: 'user profile', page: "profile", user:req.session.user, item: data.rows[0]});
+    res.render('users/profile', { title: 'user profile', page: "profile", user:req.session.user, item: data.rows[0], userSession: req.session.user
+  });
   })
 });
+
   router.post('/profile', userChecker, function(req, res) {
     console.log("masuk");
     console.log("router(/profile), method(post), req.body: ");

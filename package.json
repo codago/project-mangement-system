@@ -10,14 +10,19 @@
     "body-parser": "~1.17.1",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.3",
+    "crypto": "^1.0.1",
     "debug": "~2.6.3",
     "ejs": "~2.5.6",
     "express": "~4.15.2",
+    "express-fileupload": "^0.3.0",
     "express-session": "^1.15.5",
+    "moment": "^2.19.1",
     "morgan": "~1.8.1",
     "password-hash": "^1.2.2",
+    "path": "^0.12.7",
     "pg": "^7.3.0",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "upload-file": "^1.2.0"
   },
   "devDependencies": {
     "nodemon": "^1.12.1"
