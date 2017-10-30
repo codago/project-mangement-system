@@ -13,7 +13,7 @@ router.get('/:id', function(req, res){
       console.error(err);
       return res.send(err);
     }
-      client.query(`select members.*, users.email from members left join users on users.userid = members.userid`, (err, user) =>{
+      client.query(`select members.*, users.fristname from members left join users on users.userid = members.userid`, (err, user) =>{
 
         res.render('edit' ,{data: data.rows[0],user:user.rows})
       })
@@ -22,7 +22,7 @@ router.get('/:id', function(req, res){
 })
 
 router.post('/:id', function(req, res) {
-  let name = req.body.name
+  let name = req.body.name;
     let id = req.params.id;
 
   client.query(`UPDATE projects SET name='${name}' WHERE projectid=${id}`, (err)=>{

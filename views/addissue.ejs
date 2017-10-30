@@ -1,0 +1,160 @@
+<% include partials/header %>
+
+<div class="">
+
+  <nav  class="navbar navbar-default">
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/logout" role="button" ><button class="btn btn-info" type="button" name="button">logout</button></a><li>
+      </ul>
+
+      <ul class="nav nav-tabs">
+        <h1 class="text-center" >Overview</h1>
+        <hr width="50%" align="center">
+
+        <li role="presentation" ><a href="/projects">projects</a></li>
+        <li role="presentation" ><a href="/profile">Profile</a></li>
+
+      </ul>
+    </nav>
+
+    <div class="col-md-2">
+      <div class="bg-primary">
+        <div class="list-group">
+          <a href="/overview/<%= id %>" class="list-group-item">Owerview</a>
+          <a href="/activity/<%= id %>" class="list-group-item">Activity</a>
+          <a href="/members/<%= id %>" class="list-group-item">Members</a>
+          <a href="/issue/<%= id %>" class="list-group-item active">Issuse</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8" >
+      <h2><b>New Issue</b></h2>
+
+
+      <div class="col-md-12" style="border: 1px solid">
+        <form action="/addissue/<%= id %>" method="post" class="form-horizontal" style="margin-top:30px">
+
+
+          <div class="form-group form-group-sm">
+            <label class="col-sm-1 control-label">Tracker</label>
+            <div class="col-sm-10">
+              <input type="radio" name="tracker" value="bug" > Bug <br>
+              <input type="radio" name="tracker" value="feature" > Feature<br>
+              <input type="radio" name="tracker" value="support" > Support <br>
+            </div>
+          </div>
+
+
+          <div class="form-group form-group-sm">
+            <label  class="col-sm-1 control-label">Subject</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="subject" placeholder="Subject">
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <label  class="col-sm-1 control-label">Description</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" name="description" rows="3" placeholder="Description"></textarea>
+            </div>
+          </div>
+
+
+          <div class="form-group form-group-sm">
+            <label class="col-sm-1 control-label">Status</label>
+            <div class="col-sm-10">
+              <input type="radio" name="status" value="new" > New <br>
+              <input type="radio" name="status" value="in progress" > In progress<br>
+              <input type="radio" name="status" value="resolved" > Resolved <br>
+              <input type="radio" name="status" value="feedback"  > Feedback<br>
+              <input type="radio" name="status" value="closed" > Closed <br>
+              <input type="radio" name="status" value="rejected" > Rejected<br>
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <label class="col-sm-1 control-label">Priority</label>
+            <div class="col-sm-10" >
+              <input type="radio" name="priority" value="normal" > Normal <br>
+              <input type="radio" name="priority" value="high"  > High<br>
+              <input type="radio" name="priority" value="urgrnt" > Urgent <br>
+              <input type="radio" name="priority" value="immediate"  > Immediate<br>
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <label  class="col-sm-1 control-label">Assignee</label>
+            <div class="col-sm-10">
+              <select class="form-control" name="assignee">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <label  class="col-sm-1 control-label">Start Date</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="startdate" placeholder="start date">
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <label  class="col-sm-1 control-label">Due Date</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="duedate" placeholder="due date">
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <label  class="col-sm-1 control-label">Estimated Time</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="estimatedtime" placeholder="estimated time">
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <label  class="col-sm-1 control-label">spenttime </label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="spenttime" placeholder="spenttime">
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <label  class="col-sm-1 control-label"> Done</label>
+            <div class="col-sm-10">
+              <select class="form-control" name="done">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <label class="col-sm-1 control-label">File</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="files" placeholder="files">
+            </div>
+          </div>
+
+          <div class="form-group form-group-sm">
+            <div class="col-sm-4">
+            <button type="submit" class="btn btn-primary">SAVE</button>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+  <% include partials/footer %>

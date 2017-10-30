@@ -1,0 +1,65 @@
+<% include partials/header %>
+
+<div class="">
+
+  <nav  class="navbar navbar-default">
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/logout" role="button" ><button class="btn btn-info" type="button" name="button">logout</button></a><li>
+      </ul>
+
+      <ul class="nav nav-tabs">
+        <h1 class="text-center" >Overview</h1>
+        <hr width="50%" align="center">
+
+        <li role="presentation" ><a href="/projects">projects</a></li>
+        <li role="presentation" ><a href="/profile">Profile</a></li>
+
+      </ul>
+    </nav>
+
+    <div class="col-md-2">
+      <div class="bg-primary">
+        <div class="list-group">
+          <a href="/overview/<%= id %>" class="list-group-item">Owerview</a>
+          <a href="/activity/<%= id %>" class="list-group-item active">Activity</a>
+          <a href="/members/<%= id %>" class="list-group-item">Members</a>
+          <a href="/issue/<%= id %>" class="list-group-item" >Issuse</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8" >
+      <h2><b>Activity</b></h2>
+
+
+
+
+      <div class="col-md-8 " style="border: 1px solid">
+        <%if (data.length > 0 ){%>
+        <% for(var i=0; i < data.length; i++) { %>
+
+        <div  style="">
+          <p><b>Activity :</b></p>
+              <ul>
+                <li> From <%= data[i].startdate %> to <%= data[i].duedate %></li>
+              </ul>
+
+          <p><b>Today : </b></p>
+              <ul>
+                <li> <%= date %> <b>subject: </b> <%= data[i].subject %>, <b>tracker: </b> <%=  data[i].tracker %>, <b>status: </b> <%= data[i].status %>, <b> descriptions: </b> <%= data[i].description %> , <b> author: </b> <%= item[0].fristname %></li>
+              </ul>
+              <hr>
+        </div>
+        <% }%>
+        <%}else{%>
+          <ul>
+            <li>Data Kosong</li>
+          </ul>
+        <%}%>
+      </div>
+
+      </div>
+  </div>
+
+
+  <% include partials/footer %>

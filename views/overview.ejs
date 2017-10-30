@@ -1,0 +1,70 @@
+<% include partials/header %>
+<div class="">
+
+  <nav  class="navbar navbar-default">
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/logout" role="button" ><button class="btn btn-info" type="button" name="button">logout</button></a><li>
+      </ul>
+
+      <ul class="nav nav-tabs">
+        <h1 class="text-center" >Overview</h1>
+        <hr width="50%" align="center">
+
+        <li role="presentation" ><a href="/projects">projects</a></li>
+        <li role="presentation" ><a href="/profile">Profile</a></li>
+
+      </ul>
+    </nav>
+
+    <div class="col-md-2">
+      <div class="bg-primary">
+        <div class="list-group">
+          <a href="/overview/<%= id %>" class="list-group-item active">Owerview</a>
+          <a href="/activity/<%= id %>" class="list-group-item">Activity</a>
+          <a href="/members/<%= id %>" class="list-group-item">Members</a>
+          <a href="/issue/<%= id %>" class="list-group-item">Issuse</a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-8" >
+      <h2><b>Library System</b></h2>
+
+      <div  style="border: 1px solid">
+        <p><b>isuse tracking  </b></p>
+          <ul>
+            <li>Bug: <%= bug.length %> Open / 0</li>
+            <li>Feature:  <%= feature.length %> Open / 6</li>
+            <li>Support:  <%= support.length %> open / 1</li>
+          </ul>
+      </div>
+    </div>
+
+
+    <div class="col-md-8 " style="margin-top: 50px">
+
+
+      <div  style="border: 1px solid">
+        <p><b>Members </b></p>
+            <%if (data.length > 0 ){%>
+          <% for(var i=0; i < data.length; i++) { %>
+            <ul>
+              <li><%= data[i].fristname %></li>
+            </ul>
+          <% }%>
+
+              <%}else{%>
+                <td>Member Kosong</td>
+              <%}%>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+  <% include partials/footer %>

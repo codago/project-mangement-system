@@ -1,0 +1,157 @@
+<% include partials/header %>
+<div class="">
+
+  <nav  class="navbar navbar-default">
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/logout" role="button" ><button class="btn btn-info" type="button" name="button">logout</button></a><li>
+    </ul>
+
+    <ul class="nav nav-tabs">
+      <h1 class="text-center" >Issue</h1>
+      <hr width="50%" align="center">
+
+      <li role="presentation" ><a href="/projects">projects</a></li>
+      <li role="presentation" ><a href="/profile">Profile</a></li>
+    </ul>
+  </nav>
+
+    <div class="col-md-2">
+      <div class="bg-primary">
+        <div class="list-group">
+          <a href="/overview/<%= id %>" class="list-group-item">Owerview</a>
+          <a href="/activity/<%= id %>" class="list-group-item" >Activity</a>
+          <a href="/members/<%= id %>"class="list-group-item">Members</a>
+          <a href="/issue/<%= id %>" class="list-group-item active">Issuse</a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-9">
+      <div class="">
+
+        <!-- /form------------------------------------------------------------------------------>
+        <form class="" action="" method="get">
+          <div class="col-xs-9" >
+            <div class="form-horizontal">
+              <h2>Filter</h2>
+              <hr>
+              <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" ><input type="checkbox" name="cissueid" value="true"<%= query.cissueid ? 'checked' : '' %>>ID</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" type="number" id="id"  name="issueid" value="<%= query.issueid %>">
+                  </div>
+              </div>
+
+              <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" ><input type="checkbox" name="csubject"  value="true"<%= query.csubject ? 'checked' : '' %>>Subject</label>
+                <div class="col-sm-10">
+                  <input class=" form-control" type="text" id="name"  name="subject" value="<%= query.subject %>">
+                </div>
+              </div>
+
+              <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label">
+                  <input type="checkbox" name="ctracker" value="true"<%= query.ctracker ? 'checked' : '' %>>Tracker</label>
+                  <div class="col-sm-10">
+                    <select name="tracker" class="form-control" >
+                      <option <%= query.tracker == "bug" ? ' selected' : '' %>>bug</option>
+                      <option <%= query.tracker == "feature" ? ' selected' : '' %>>feature</option>
+                      <option <%= query.tracker == "support" ? ' selected' : '' %>>support</option>
+
+                    </select>
+                  </div>
+              </div>
+
+              <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label" for="formGroupInputSmall"></label>
+                <div class="col-sm-10">
+                  <button  style="margin-top : 30px"type="submit" name="search" class="btn btn-primary"> Search </button> <br>
+                </div>
+              </div>
+
+              <div class="col-xs-9">
+                <div class="form-horizontal">
+                  <h2>Options</h2>
+                  <hr>
+                  <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label">Colums</label>
+                    <div class="col-sm-10">
+                      <input type="checkbox" name="tabelissueid" value="true"<%= query.tabelissueid ? 'checked' : '' %>> ID <br>
+                      <input type="checkbox" name="tabelsubject" value="true"<%= query.tabelsubject ? 'checked' : '' %>> Subject <br>
+                      <input type="checkbox" name="tabeltracker" value="true"<%= query.tabeltracker ? 'checked' : '' %>> Tracker <br>
+                    </div>
+                  </div>
+
+                  <div class="form-group form-group-sm">
+                    <label class="col-sm-2 control-label" for="formGroupInputSmall"></label>
+                    <div class="col-sm-10">
+                      <button  style="margin-top : 30px"type="submit" name="search" class="btn btn-primary"> Apply </button> <br>
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+          <!---form/---------------------------------------------------------------------------------->
+
+          <!---/tabel---------------------------------------------------------------------------------->
+
+        <div class="form-group form-group-sm">
+          <table class="table table-bordered">
+            <%if (data.length > 0 ){%>
+              <tr>
+                <%if (query.tabelissueid){%>
+                <th>#</th>
+                <% } %>
+                <%if (query.tabelsubject){%>
+                <th>Subject</th>
+                  <% } %>
+                  <%if (query.tabeltracker){%>
+                <th>Tracker</th>
+                <% } %>
+                <th>Action</th>
+              </tr>
+              <% for(var i=0; i < data.length; i++) { %>
+              <tbody>
+                <tr>
+                    <%if (query.tabelissueid){%>
+                  <td><%= data[i].issueid %></td>
+                  <% } %>
+                  <%if (query.tabelsubject){%>
+                  <td><%= data[i].subject %></td>
+                  <% } %>
+                  <%if (query.tabeltracker){%>
+                  <td><%= data[i].tracker %></td>
+                  <% } %>
+                  <td>
+                    <a href="/editissue/<%= data[i].projectid %>"> <button class="btn btn-success"> Edit</button> </a>
+                    <a href="/delete/<%= data[i].projectid %>" onclick="return confirm('anda yakin ?');"><button class="btn btn-danger"> Delete </button></a>
+                  </td>
+                </tr>
+              </tbody>
+              <% } %>
+          <%} else {%>
+              <td>Data Kosong</td>
+          <%}%>
+            </table>
+          </div>
+          <!---tabel/---------------------------------------------------------------------------------->
+      </div>
+
+    <div class="col-xs-9">
+      <label class="col-sm-2 control-label" for="formGroupInputSmall"></label>
+        <div class="col-sm-10">
+          <a href="/addissue/<%= id %>"><button  style="margin-top : 30px"type="submit" name="button" class="btn btn-primary"> Add </button> <br></a>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+  <% include partials/footer %>

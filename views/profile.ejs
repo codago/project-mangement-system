@@ -2,68 +2,68 @@
 <nav  class="navbar navbar-default">
   <ul class="nav navbar-nav navbar-right">
     <li><a href="/logout" role="button" ><button class="btn btn-info" type="button" name="button">logout</button></a><li>
-  </ul>
+    </ul>
 
-  <ul class="nav nav-tabs">
-    <h1 class="text-center" >Profile</h1>
-    <hr width="50%" align="center">
+    <ul class="nav nav-tabs">
+      <h1 class="text-center" >Profile</h1>
+      <hr width="50%" align="center">
 
-    <li role="presentation"><a href="projects">projects</a></li>
-    <li role="presentation" class="active"><a href="profile">Profile</a></li>
+      <li role="presentation"><a href="projects">projects</a></li>
+      <li role="presentation" class="active"><a href="profile">Profile</a></li>
 
-  </ul>
-</nav>
+    </ul>
+  </nav>
 
   <form action="/profile" method="post" class="form-horizontal">
-      <div class="col-xs-9">
-        <div class="form-horizontal">
-      <fieldset disabled>
+    <div class="col-xs-9">
+      <div class="form-horizontal">
+        <fieldset disabled>
           <hr>
-            <div class="form-group form-group-sm">
+          <div class="form-group form-group-sm">
             <label class="col-sm-2 control-label" >Email</label>
             <div class="col-sm-10">
               <input class="form-control" type="email" value="<%= email%>" name="email" >
             </div>
           </div>
-      </fieldset>
+        </fieldset>
 
-          <div class="form-group form-group-sm">
-            <label class="col-sm-2 control-label" >Password</label>
-            <div class="col-sm-10">
-              <input class=" form-control" type="password" id="password" name="password" placeholder="password">
-      
-            </div>
-          </div>
+        <div class="form-group form-group-sm">
+          <label class="col-sm-2 control-label" >Password</label>
+          <div class="col-sm-10">
+            <input class=" form-control" type="password" id="password" name="password" placeholder="password">
 
-          <div class="form-group form-group-sm">
-            <label class="col-sm-2 control-label">Position</label>
-            <div class="col-sm-10">
-              <input type="radio" name="position" value="manager" <% if(role == 'manager'){%> checked <%}%> >Manager <br>
-              <input type="radio" name="position" value="sofwere developer" <% if(role == 'sofwere developer'){%> checked <%}%> >Sofwere Developer <br>
-              <input type="radio" name="position" value="quality assurance" <% if(role == 'quality assurance'){%> checked <%}%> >Quality Assurance <br>
-            </div>
           </div>
-
-          <div class="form-group form-group-sm">
-            <label class="col-sm-2 control-label">Type</label>
-            <div class="col-sm-10">
-              <input type="checkbox" name="type" value="type" <% if(type == true){%> checked <%}%>> Fultime <br>
-            </div>
-          </div>
-
-          <div class="form-group form-group-sm">
-              <label class="col-sm-2 control-label" for="formGroupInputSmall"></label>
-            <div class="col-sm-10">
-              <button  style="margin-top : 30px"type="submit" name="button" class="btn btn-primary"> Update </button> <br>
-            </div>
-          </div>
-       <hr>
         </div>
 
+        <div class="form-group form-group-sm">
+          <label class="col-sm-2 control-label">Position</label>
+          <div class="col-sm-10">
+            <input type="radio" name="position" value="manager" <% if(role == 'manager'){%> checked <%}%> >Manager <br>
+            <input type="radio" name="position" value="sofwere developer" <% if(role == 'sofwere developer'){%> checked <%}%> >Sofwere Developer <br>
+            <input type="radio" name="position" value="quality assurance" <% if(role == 'quality assurance'){%> checked <%}%> >Quality Assurance <br>
+          </div>
+        </div>
+
+        <div class="form-group form-group-sm">
+          <label class="col-sm-2 control-label">Type</label>
+          <div class="col-sm-10">
+            <input type="checkbox" name="type" value="type" <% if(type == true){%> checked <%}%>> Fultime <br>
+          </div>
+        </div>
+
+        <div class="form-group form-group-sm">
+          <label class="col-sm-2 control-label" for="formGroupInputSmall"></label>
+          <div class="col-sm-10">
+            <button  style="margin-top : 30px"type="submit" name="button" class="btn btn-primary"> Update </button> <br>
+          </div>
+        </div>
+        <hr>
       </div>
+
+    </div>
 
   </from>
 
 
 
-<% include partials/footer %>
+  <% include partials/footer %>

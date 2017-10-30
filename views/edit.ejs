@@ -17,7 +17,7 @@
         <label class="col-sm-2 control-label">Members</label>
         <div class="col-sm-10">
           <% for(var i=0; i < user.length; i++) { %>
-          <input type="checkbox" name="member" value="<%= user[i].userid%>" <%= data.projectid == user[i].projectid ? 'checked' : '' %>><%= user[i].userid%>  <%= user[i].email%> <br>
+          <input type="checkbox" name="member" value="<%= user[i].userid%>" <%= data.projectid == user[i].projectid ? 'checked' : '' %>> <%= user[i].fristname%> <br>
           <% } %>
         </div>
       </div>

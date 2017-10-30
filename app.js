@@ -10,11 +10,17 @@ var projects = require('./routes/projects');
 var add = require('./routes/add');
 var edit = require('./routes/edit');
 var register = require('./routes/register');
+var addissue = require('./routes/addissue');
+var editissue = require('./routes/editissue');
+var activity = require('./routes/activity');
+var issue = require('./routes/issue');
 var profile = require('./routes/profile');
+var overview = require('./routes/overview');
+var members = require('./routes/members');
 var flash = require('connect-flash');
 var session = require('express-session')
 //var session = require('client-sessions');
-
+require('dotenv').config()
 
 
 
@@ -50,6 +56,12 @@ app.use('/add', add);
 app.use('/edit', edit);
 app.use('/register', register);
 app.use('/profile', profile);
+app.use('/addissue', addissue);
+app.use('/activity', activity);
+app.use('/editissue', editissue);
+app.use('/issue', issue);
+app.use('/overview', overview);
+app.use('/members', members);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -68,5 +80,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 module.exports = app;

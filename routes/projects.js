@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var userChecker = require('../helper/userChecker')
 
+
 var { Client } = require('pg')
 var connectionString = process.env.DATABASE_URL || 'postgres://radian:1234567@localhost:5432/projectmangement';
 var client = new Client(connectionString);
@@ -28,7 +29,7 @@ router.get('/' , function(req, res) {
 
   let sql = `SELECT count(*) AS total  FROM projects
   ${left}JOIN (
-    SELECT  projectid, array_agg(users.email)
+    SELECT  projectid, array_agg(users.fristname)
     FROM members
     LEFT JOIN users ON users.userid = members.userid
     WHERE projectid IN
@@ -46,7 +47,7 @@ router.get('/' , function(req, res) {
 
   client.query(sql, (err, data) => {
     if (err) {
-      console.error(err)
+      console.eocarror(err)
       return res.send(err);
     }
     let page = Number(req.query.page) || 1
@@ -57,7 +58,7 @@ router.get('/' , function(req, res) {
     let url = (req.url == "/projects") ? "/projects/?page=1" : req.url;
     sql = `SELECT projects.*, p.array_agg FROM projects
     ${left}JOIN (
-      SELECT  projectid, array_agg(users.email)
+      SELECT  projectid, array_agg(users.fristname)
       FROM members
       LEFT JOIN users ON users.userid = members.userid
       WHERE projectid IN

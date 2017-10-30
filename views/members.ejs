@@ -1,0 +1,146 @@
+<% include partials/header %>
+<div class="">
+  <nav  class="navbar navbar-default">
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/logout" role="button" ><button class="btn btn-info" type="button" name="button">logout</button></a><li>
+    </ul>
+
+    <ul class="nav nav-tabs">
+      <h1 class="text-center" >Members</h1>
+      <hr width="50%" align="center">
+
+      <li role="presentation" ><a href="/projects">projects</a></li>
+      <li role="presentation" ><a href="/profile">Profile</a></li>
+    </ul>
+  </nav>
+
+  <div class="col-md-2">
+    <div class="bg-primary">
+      <div class="list-group">
+        <a href="/overview/<%= id %>" class="list-group-item">Owerview</a>
+        <a href="/activity/<%= id %>" class="list-group-item">Activity</a>
+        <a href="/members/<%= id %>" class="list-group-item active">Members</a>
+        <a href="/issue/<%= id %>" class="list-group-item">Issuse</a>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-md-9">
+    <div class="">
+      <!-- /form------------------------------------------------------------------------------>
+      <form class="" action="" method="get">
+        <div class="col-xs-9" >
+          <div class="form-horizontal">
+            <h2>Filter</h2>
+            <hr>
+            <div class="form-group form-group-sm">
+              <label class="col-sm-2 control-label" ><input type="checkbox" name="cid" value="true"<%= query.cid ? 'checked' : '' %>>ID</label>
+              <div class="col-sm-10">
+                <input class="form-control" type="number" id="id" placeholder="ID" name="id" value="<%= query.id %>">
+              </div>
+            </div>
+
+            <div class="form-group form-group-sm">
+              <label class="col-sm-2 control-label" ><input type="checkbox" name="cname" value="true"<%= query.cname ? 'checked' : '' %>>Name</label>
+              <div class="col-sm-10">
+                <input class=" form-control" type="text" id="name" placeholder="Name" name="name" value="<%= query.name %>">
+              </div>
+            </div>
+
+            <div class="form-group form-group-sm">
+              <label class="col-sm-2 control-label"><input type="checkbox" name="cposition" value="true"<%= query.cname ? 'checked' : '' %>>position</label>
+              <div class="col-sm-10">
+                <select name="position" class="form-control">
+                  <option value=""> Choose the position ... </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group form-group-sm">
+              <label class="col-sm-2 control-label" for="formGroupInputSmall"></label>
+              <div class="col-sm-10">
+                <button  style="margin-top : 30px"type="submit" name="search" class="btn btn-primary"> Search </button> <br>
+              </div>
+            </div>
+
+            <div class="col-xs-9">
+              <div class="form-horizontal">
+                <h2>Options</h2>
+                <hr>
+                <div class="form-group form-group-sm">
+                  <label class="col-sm-2 control-label">Colums</label>
+                    <div class="col-sm-10">
+                      <input type="checkbox" name="tabelid" value="true"<%= query.tabelid ? 'checked' : '' %>> ID <br>
+                      <input type="checkbox" name="tabelname" value="true"<%= query.tabelname ? 'checked' : '' %>> Name <br>
+                      <input type="checkbox" name="tabelposition" value="true"<%= query.tabelposition ? 'checked' : '' %> > Position <br>
+                    </div>
+                </div>
+
+                <div class="form-group form-group-sm">
+                  <label class="col-sm-2 control-label" for="formGroupInputSmall"></label>
+                    <div class="col-sm-10">
+                      <button  style="margin-top : 30px"type="submit" name="search" class="btn btn-primary"> Apply </button> <br>
+                    </div>
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+<!---form/---------------------------------------------------------------------------------->
+
+<!---/tabel---------------------------------------------------------------------------------->
+
+      <div class="form-group form-group-sm">
+        <table class="table table-bordered">
+          <%if (data.length > 0 ){%>
+            <tr>
+              <%if (query.tabelid){%>
+              <th>#</th>
+              <% } %>
+              <%if (query.tabelname ){%>
+              <th>Name</th>
+              <% } %>
+              <%if (query.tabelposition ){%>
+              <th>position</th>
+              <% } %>
+              <th>Action</th>
+            </tr>
+
+            <% for(var i=0; i < data.length; i++) { %>
+            <tbody>
+              <tr>
+              <%if (query.tabelid){%>
+                <td><%= data[i].userid %></td>
+              <% } %>
+              <%if (query.tabelname){%>
+                <td><%= data[i].fristname %></td>
+              <% } %>
+              <%if (query.tabelposition){%>
+                <td><%= data[i].role %></td>
+              <% } %>
+                <td>
+                    <a href="edit/<%= data[i].projectid %>"> <button class="btn btn-success"> Edit</button> </a>
+                    <a href="projects/delete/<%= data[i].projectid %>" onclick="return confirm('anda yakin ?');"><button class="btn btn-danger"> Delete </button></a>
+                </td>
+              </tr>
+
+              <% } %>
+          <%}else{%>
+              <td>Data Kosong</td>
+          <%}%>
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+      <div class="col-xs-9">
+        <label class="col-sm-2 control-label" for="formGroupInputSmall"></label>
+        <div class="col-sm-10">
+          <a href="/addmember"><button  style="margin-top : 30px"type="submit" name="button" class="btn btn-primary"> Add </button> <br></a>
+        </div>
+      </div>
+  </div>
+</div>
+<% include partials/footer %>
